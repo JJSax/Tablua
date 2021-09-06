@@ -23,7 +23,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ]]
 
 table.__index = table
-table.__extVersion = "0.1.0"
+table.__extVersion = "0.1.1"
 
 -- This version has not been fully tested.
 -- Since it alters lua's default table namespace, use at your own risk.
@@ -329,10 +329,11 @@ function table.filter(a, test)
 
 	local out = table.new()
 	for k,v in pairs(a) do
-		if text(k, v) then
+		if test(k, v) then
 			out:insert(v)
 		end
 	end
+	return out
 
 end
 
