@@ -23,7 +23,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ]]
 
 table.__index = table
-table.__extVersion = "0.1.1"
+table.__extVersion = "0.1.3"
 
 -- This version has not been fully tested.
 -- Since it alters lua's default table namespace, use at your own risk.
@@ -190,20 +190,14 @@ end
 
 function table.last(a)
 
-	--[[
-	This will return the last item in a sorted array
-	]]
-
+	--This will return the last item in a sorted array
 	return a[#a]
 
 end
 
 function table.first(a)
 
-	--[[
-	This will return the value at index 1.
-	]]
-
+	--This will return the value at index 1.
 	return a[1]
 
 end
@@ -345,6 +339,23 @@ function table.invert(a, new)
 
 	for i = 1, math.floor(#a/2) do
 		table.swap(a, i, #a-(i-1))
+	end
+
+end
+
+function table.shuffle(a)
+
+	--[[
+		Implements Fisher-Yates Shuffle algorithm.
+		This directly shuffles table a
+	]]
+
+	local length = #a
+	while length > 0 do
+		local i = math.random(1, length)
+		length = length - 1
+
+		table.swap(a, length, i)
 	end
 
 end
