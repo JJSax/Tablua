@@ -1,6 +1,6 @@
 
 --[[
-Copyright <2021> <COPYRIGHT Jared Augerot (JJSax)>
+Copyright <2022> <COPYRIGHT Jared Augerot (JJSax)>
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -23,7 +23,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ]]
 
 table.__index = table
-table.__extVersion = "0.1.3"
+table.__extVersion = "0.1.4"
 
 -- This version has not been fully tested.
 -- Since it alters lua's default table namespace, use at your own risk.
@@ -36,13 +36,16 @@ local function assert(condition, message, stack)
 	end
 end
 
+local function assertTable(t)
+	assert(type(t) == "table",
+		"Parameter type needs to be of type \"table\".  Passed type: "..type(t), 4)
+end
+
 -------------------------------------------------
 
 function table.new(t)
 	return setmetatable(t or {}, table)
 end
-
-
 
 function table.isArray(a)
 
@@ -51,8 +54,7 @@ function table.isArray(a)
 	This does iterate through all items in the table to get the count.
 	]]
 
-	assert(type(a) == "table",
-		"Parameter type needs to be of type \"table\".  Passed type: "..type(a), 3)
+	assertTable(a)
 	return #a == table.size(a)
 
 end
@@ -64,8 +66,7 @@ function table.size(a)
 	If the table is an array, use #tableName
 	]]
 
-	assert(type(a) == "table",
-		"Parameter type needs to be of type \"table\".  Passed type: "..type(a), 3)
+	assertTable(a)
 
 	local count = 0
 	for k,v in pairs(a) do
@@ -81,6 +82,8 @@ function table.swap(a, first, second)
 	This will swap two elements in the table.
 	]]
 
+	assertTable(a)
+
 	local cache = a[first]
 	a[first] = a[second]
 	a[second] = cache
@@ -95,8 +98,7 @@ function table.qclone(a)
 	If you are unsure if you should use this function, or table.clone, use table.clone.
 	]]
 
-	assert(type(a) == "table",
-		"Parameter type needs to be of type \"table\".  Passed type: "..type(a), 3)
+	assertTable(a)
 
 	local output = {}
 	for k,v in pairs(a) do
@@ -125,37 +127,37 @@ function table.clone(a)
 
 end
 
-function table.join(a, b, new)
+function table.join(a, ...)
 
 	--[[
-	This function joins two tables together into new table.
-	Joining two numerically indexed tables will just table.insert from b to a
-	tables with string keys will set a[key] to b[key] value.
+	This function will join multiple tables together.
+ 	Tables with string keys will set a[key] to b[key] value.
 	]]
 
-	local temp = a
-	for k,v in pairs(b) do
-		if type(k) == "number" then
-			temp:insert(v)
-		elseif type(k) == "string" then
-			temp[k] = v
+	assertTable(a)
+
+	local output = table.clone(a)
+	for i = 1, select("#", ...) do
+		local t = select(i, ...)
+		assertTable(t)
+		for k,v in pairs(t) do
+			if type(k) == "number" then
+				output:insert(v)
+			else
+				output[k] = v
+			end
 		end
 	end
-	if new then -- new dictates if it should return a new table or alter a
-		return table.new(temp)
-	end
-	a = temp
-
+	return table.new(output)
 end
 
 function table.slice(a, start, finish)
 
 	--[[
-	Returns a new table from a from numerical index start to finish.
+	Returns a new array from a from numerical index start to finish.
 	]]
 
-	assert(type(a) == "table",
-		"Parameter type needs to be of type \"table\".  Passed type: "..type(a), 3)
+	assertTable(a)
 
 	if not finish then
 		finish = start
@@ -171,21 +173,28 @@ function table.slice(a, start, finish)
 
 end
 
-function table.splice(a, start, finish)
-
+function table.splice(a, index, howmany, ...)
 	--[[
-	Change original to everything not removed from it
-	return new array with all the removed items
+	This function will remove a range of elements from a table.
+	... will insert at index
+	developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
 	]]
 
-	local out = {}
-	for i = start, finish do
-		table.insert(out, a[i])
-		a[i] = nil
-	end
-	table.condense(a)
-	return table.new(out)
+	assertTable(a)
 
+	if not howmany then howmany = 0 end
+	local out = {}
+	for i = 1, index do
+		table.insert(out, a[i])
+	end
+	for k,v in ipairs({...}) do
+		table.insert(out, v)
+	end
+	for i = index + howmany + 1, #a do
+		table.insert(out, a[i])
+	end
+
+	return table.new(out)
 end
 
 function table.last(a)
@@ -195,32 +204,79 @@ function table.last(a)
 
 end
 
-function table.first(a)
-
-	--This will return the value at index 1.
-	return a[1]
-
-end
-
 function table.find(a, value)
 
 	--[[
-	Searches table and returns true if the value was found
+	This function will search a table for a value and return the index of the value.
+	If the value is not found, it will return nil.
 	]]
+
+	assertTable(a)
 
 	for k,v in pairs(a) do
 		if v == value then
 			return k
 		end
 	end
-	return false
+	return nil
+
+end
+
+function table.binarySearch(a, value)
+
+	--[[
+	This function will search a table for a value and return the index of the value.
+	If the value is not found, it will return nil.
+	@Ensure a is sorted before using this function.
+	]]
+
+	assertTable(a)
+
+	local low = 1
+	local high = #a
+	while low <= high do
+		local mid = math.floor((low + high) / 2)
+		if a[mid] == value then
+			return mid
+		elseif a[mid] < value then
+			low = mid + 1
+		else
+			high = mid - 1
+		end
+	end
+	return nil
+
+end
+
+function table.compare(a, b)
+
+	--[[
+	This function will compare two tables and return true if they are the same.
+	]]
+
+	assertTable(a)
+	assertTable(b)
+
+	if #a ~= #b then
+		return false
+	end
+
+	local clone = table.clone(b)
+	for k,v in pairs(a) do
+		if clone[k] ~= v then
+			return false
+		end
+		clone[k] = nil
+	end
+
+	return table.size(clone) == 0
 
 end
 
 function table.unique(a)
 
 	--[[
-	This will return unique values in a
+	This will reduce a into it's unique values
 	]]
 
 	local unique = {}
@@ -231,22 +287,7 @@ function table.unique(a)
 			table.insert(unique, v)
 		end
 	end
-	return unique
-
-end
-
-function table.indexOf(a, value)
-
-	--[[
-	This will search the table/array until it finds something with the value and return that key
-	]]
-
-	for k,v in pairs(a) do
-		if v == value then
-			return k
-		end
-	end
-	return false
+	return table.new(unique)
 
 end
 
@@ -269,13 +310,14 @@ end
 
 function table.condense(a, remove)
 
-	--[[
+	--[[ Read notes before using.
 	This will go through an array and remove all that match [remove].
 	This one will condense table passed.  table.gCondense will return a new table.
-	WARNING: this uses a technique that alters a table whilst iterating it.
+	!WARNING: this uses a technique that alters a table whilst iterating it.
 	  I've tested this heavily, but more testing is needed to guarantee.
 	  If you use this and find it's messing up your tables, open a Github issue.
-
+	  My testing was using Löve2d on Lua 5.1;
+	   Testing pure LUA 5.4.3 this errors when called.
 	I chose to use this algorithm to preserve table address and prevent iterating
 	  over the table twice.
 	]]
@@ -334,7 +376,7 @@ end
 function table.invert(a, new)
 
 	--[[
-	Sets or Returns a table that is in the reverse order of a
+	Reverses the order of a
 	]]
 
 	for i = 1, math.floor(#a/2) do
