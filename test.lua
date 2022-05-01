@@ -140,6 +140,16 @@ test(
 )
 
 test(
+	"slice2",
+	function()
+		local x = {1,2,3,4,5,6}
+		local y = table.slice(x, 3)
+		return y[1] == 3 and y[2] == 4 and y[3] == 5 and y[4] == 6
+	end,
+	true
+)
+
+test(
 	"splice1",
 	function()
 		local x = {1,2,3,4,5,6,7,8,9}
@@ -165,6 +175,29 @@ test(
 	end,
 	true
 )
+
+test(
+	"choice1",
+	function()
+		-- there is a 0.00000000001% chance this will choose the same choice all 11 times
+		-- if that happens this will be a false negative
+		math.randomseed(os.time())
+		local x = {0,1,2,3,4,5,6,7,8,9}
+
+		local firstChoice = table.choice(x)
+		for i = 1, 10 do
+			local secondChoice = table.choice(x)
+			if firstChoice ~= secondChoice then
+				return true
+			end
+		end
+
+		return false
+	end,
+	true
+)
+
+-- currently no monkey test for choices method.
 
 test(
 	"find1",
