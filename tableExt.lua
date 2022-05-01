@@ -23,7 +23,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ]]
 
 table.__index = table
-table.__extVersion = "0.1.4"
+table.__extVersion = "0.1.5"
 
 -- This version has not been fully tested.
 -- Since it alters lua's default table namespace, use at your own risk.
@@ -159,10 +159,7 @@ function table.slice(a, start, finish)
 
 	assertTable(a)
 
-	if not finish then
-		finish = start
-		start = 1
-	end
+	if not finish then finish = #a end
 
 	local out = {}
 	for i = start, finish do
@@ -201,6 +198,36 @@ function table.last(a)
 
 	--This will return the last item in a sorted array
 	return a[#a]
+
+end
+
+function table.choice(a)
+
+	--Returns a random item from the table.
+
+	assert(type(a) == "table",
+		"Parameter type needs to be of type 'table'.  Passed type: " .. type(a), 3)
+
+	local choice = math.random(#a)
+	return a[choice], choice
+
+end
+
+function table.choices(a, count)
+
+	--Returns count number of random items from the table.
+
+	assert(type(a) == "table",
+		"Parameter type needs to be of type 'table'.  Passed type: " .. type(a), 3)
+
+	local out = {}
+	local cache = table.clone(a)
+	for i = 1, count do
+		local choice, key = table.choice(cache)
+		table.insert(out, choice)
+		table.remove(cache, key)
+	end
+	return table.new(out)
 
 end
 
@@ -257,9 +284,8 @@ function table.compare(a, b)
 	assertTable(a)
 	assertTable(b)
 
-	if #a ~= #b then
-		return false
-	end
+	if a == b then return true end
+	if #a ~= #b then return false end
 
 	local clone = table.clone(b)
 	for k,v in pairs(a) do
@@ -373,7 +399,7 @@ function table.filter(a, test)
 
 end
 
-function table.invert(a, new)
+function table.invert(a)
 
 	--[[
 	Reverses the order of a
