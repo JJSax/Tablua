@@ -419,7 +419,7 @@ function table.shuffle(a)
 	]]
 
 	local length = #a
-	while length > 0 do
+	while length > 1 do
 		local i = math.random(1, length)
 		length = length - 1
 
