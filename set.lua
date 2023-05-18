@@ -3,12 +3,8 @@
 local Set = {}
 Set.__index = Set
 
-function Set.new(start)
-	local self = setmetatable({}, Set)
-	for k, v in ipairs(start or {}) do
-		self[v] = true
-	end
-	return self
+function Set.new()
+	return setmetatable({}, Set)
 end
 
 function Set:add(key)
@@ -28,6 +24,14 @@ function Set:size()
 	local s = 0
 	for k,v in pairs(self) do s = s + 1 end
 	return s
+end
+
+function Set:clone()
+	local out = {}
+	for k,v in pairs(self) do
+		out[k] = v
+	end
+	return setmetatable(out, Set)
 end
 
 return Set
