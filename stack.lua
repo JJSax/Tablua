@@ -5,23 +5,37 @@
 
 local stack = {}
 stack.__index = stack
+local sizeName = "__SIZEOFSETPROTECTEDVARIABLENAMESPACE__"
 
 function stack.new(input)
-	return setmetatable(input or {}, stack)
+	input = input or {}
+	input[sizeName] = 0
+
+	for i, v in ipairs(input) do
+		input[sizeName] = input[sizeName] + 1
+		assert(v ~= sizeName, "Attempt to use protected namespace.")
+	end
+
+	return setmetatable(input, stack)
 end
 
 function stack:push(input)
-	self.size = self.size + 1
+	assert(input ~= sizeName, "Attempt to use protected namespace.")
+	self[sizeName] = self[sizeName] + 1
 	table.insert(self, input)
 end
 
 function stack:pop()
-	self.size = self.size - 1
+	self[sizeName] = self[sizeName] - 1
 	return table.remove(self, #self)
 end
 
 function stack:isEmpty()
-	return self.size == 0
+	return self[sizeName] == 0
+end
+
+function stack:getSize()
+	return self[sizeName]
 end
 
 return stack
