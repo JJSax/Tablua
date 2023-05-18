@@ -2,28 +2,27 @@
 
 local Set = {}
 Set.__index = Set
+local sizeName = "__SIZEOFSETPROTECTEDVARIABLENAMESPACE__"
 
 function Set.new()
-	return setmetatable({}, Set)
+	return setmetatable({[sizeName] = 0}, Set)
 end
 
 function Set:add(key)
+	assert(key ~= sizeName, "Attempt to use protected key.")
 	if key == nil then return end
+	self[sizeName] = self[sizeName] + 1
 	self[key] = true
 end
 
 function Set:remove(key)
 	if key == nil then return end
+	self[sizeName] = self[sizeName] - 1
 	self[key] = nil
 end
 
- --? how can I cache this?
- --? caching outside will waste memory
- --? caching inside set will utilize a namespace
 function Set:size()
-	local s = 0
-	for k,v in pairs(self) do s = s + 1 end
-	return s
+	return self[sizeName]
 end
 
 function Set:clone()

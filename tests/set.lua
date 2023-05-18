@@ -15,16 +15,6 @@ local function test(label, test, expect)
 	)
 end
 
-local function arraysAreEqual(x, original)
-	if x == original then return true end
-	for i, v in ipairs(x) do
-		if original[i] ~= v then
-			return false
-		end
-	end
-	return true
-end
-
 test(
 	"add",
 	function()
