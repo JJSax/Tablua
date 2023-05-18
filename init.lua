@@ -1,11 +1,11 @@
 
 local HERE = (...):gsub('%.[^%.]+$', '')
 
-local Set = require(HERE..".set")
-local Array = require(HERE..".array")
-local Queue = require(HERE..".queue")
-local Stack = require(HERE..".stack")
-local Tablua = require(HERE..".table")
+local Set = require(HERE..".tablua.set")
+local Array = require(HERE..".tablua.array")
+local Queue = require(HERE..".tablua.queue")
+local Stack = require(HERE..".tablua.stack")
+local Tablua = require(HERE..".tablua.tablua")
 
 local tablua = {}
 
