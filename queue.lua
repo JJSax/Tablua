@@ -41,11 +41,14 @@ function queue:peek()
 end
 queue.front = queue.peek
 
-function queue:IsEmpty() return self.size == 0 end
+function queue:isEmpty() return self.size == 0 end
 function queue:getSize() return self.size end
 function queue:clear()
+	-- making new table may be faster.  Consider if you need the same memory address
 	self.size = 0
-	self = queue.new()
+	for k in ipairs(self) do
+		self[k] = nil
+	end
 end
 
 function queue:contains(value)
@@ -57,22 +60,6 @@ end
 
 function queue:iterate()
 	return ipairs(self)
-end
-
-function queue:qclone()
-
-	--[[
-	This function is a simple clone.  Only meant for single layer tables and queues.
-	Passed a table with a nested table, original references to subsequent table could interfere.
-	If you are unsure if you should use this function, or table.clone, use table.clone.
-	]]
-
-	local output = {}
-	for k,v in pairs(self) do
-		output[k] = v
-	end
-	return queue.new(output)
-
 end
 
 function queue:clone()
@@ -92,8 +79,10 @@ function queue:toString(delimiter)
 	local s = ""
 	for i, v in ipairs(self) do
 		assert(type(v) == "string" or type(v) == "number", "Invalid value in queue.")
-		s = s..v
+		s = s..v..delimiter
 	end
+	s = s:sub(1, -#delimiter-1)
+	return s
 end
 
 
