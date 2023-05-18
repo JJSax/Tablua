@@ -1,6 +1,6 @@
 
 --[[
-Copyright <2022-2023> <COPYRIGHT Jared Augerot (JJSax)>
+Copyright <2022 - 2023> <COPYRIGHT Jared Augerot (JJSax)>
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -22,13 +22,14 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ]]
 
-table.__index = table
-table.__extVersion = "0.1.51"
+local Table = {}
 
---! This file is depreciating!!
---! Use [library].tablua instead.
---! This one overwrites lua's table
---! Better practice is to use it locally when needed, which tablua offers
+for k, v in pairs(table) do
+	Table[k] = v
+end
+Table.__index = Table
+Table.__extVersion = "0.4.0"
+
 
 local function assert(condition, message, stack)
 	if not condition then
@@ -38,32 +39,32 @@ end
 
 local function assertTable(t)
 	assert(type(t) == "table",
-		"Parameter type needs to be of type \"table\".  Passed type: "..type(t), 4)
+		"Parameter type needs to be of type 'table'.  Passed type: "..type(t), 4)
 end
 
 -------------------------------------------------
 
-function table.new(t)
-	return setmetatable(t or {}, table)
+function Table.new(t)
+	return setmetatable(t or {}, Table)
 end
 
-function table.isArray(a)
+function Table.isArray(a)
 
 	--[[
-	Returns if the table is an ordered array.
-	This does iterate through all items in the table to get the count.
+	Returns if the Table is an ordered array.
+	This does iterate through all items in the Table to get the count.
 	]]
 
 	assertTable(a)
-	return #a == table.size(a)
+	return #a == Table.size(a)
 
 end
 
-function table.size(a)
+function Table.size(a)
 
 	--[[
-	Works like #table but works for tables with string keys and non sequence number keys
-	If the table is an array, use #tableName
+	Works like #Table but works for tables with string keys and non sequence number keys
+	If the Table is an array, use #tableName
 	]]
 
 	assertTable(a)
@@ -76,10 +77,10 @@ function table.size(a)
 
 end
 
-function table.swap(a, first, second)
+function Table.swap(a, first, second)
 
 	--[[
-	This will swap two elements in the table.
+	This will swap two elements in the Table.
 	]]
 
 	assertTable(a)
@@ -90,12 +91,12 @@ function table.swap(a, first, second)
 
 end
 
-function table.qclone(a)
+function Table.qclone(a)
 
 	--[[
 	This function is a simple clone.  Only meant for single layer tables and arrays.
-	Passed a table with a nested table, original references to subsequent table could interfere.
-	If you are unsure if you should use this function, or table.clone, use table.clone.
+	Passed a Table with a nested Table, original references to subsequent Table could interfere.
+	If you are unsure if you should use this function, or Table.clone, use Table.clone.
 	]]
 
 	assertTable(a)
@@ -104,30 +105,30 @@ function table.qclone(a)
 	for k,v in pairs(a) do
 		output[k] = v
 	end
-	return table.new(output)
+	return Table.new(output)
 
 end
 
-function table.clone(a)
+function Table.clone(a)
 
 	--[[
-	This function will create copy of the passed table, and will clone any nested tables.
+	This function will create copy of the passed Table, and will clone any nested tables.
 	]]
 
 	if type(a) ~= "table" then return a end
 	local output = {}
 	for k, v in pairs(a) do
 		if type(v) == "table" then
-			output[k] = table.clone(v)
+			output[k] = Table.clone(v)
 		else
 			output[k] = v
 		end
 	end
-	return table.new(output)
+	return Table.new(output)
 
 end
 
-function table.join(a, ...)
+function Table.join(a, ...)
 
 	--[[
 	This function will join multiple tables together.
@@ -136,22 +137,22 @@ function table.join(a, ...)
 
 	assertTable(a)
 
-	local output = table.clone(a)
+	local output = Table.clone(a)
 	for i = 1, select("#", ...) do
 		local t = select(i, ...)
 		assertTable(t)
 		for k,v in pairs(t) do
 			if type(k) == "number" then
-				output:insert(v)
+				Table.insert(output, v)
 			else
 				output[k] = v
 			end
 		end
 	end
-	return table.new(output)
+	return Table.new(output)
 end
 
-function table.slice(a, start, finish)
+function Table.slice(a, start, finish)
 
 	--[[
 	Returns a new array from a from numerical index start to finish.
@@ -164,15 +165,15 @@ function table.slice(a, start, finish)
 	local out = {}
 	for i = start, finish do
 		if not a[i] then break end
-		table.insert(out, a[i])
+		Table.insert(out, a[i])
 	end
-	return table.new(out)
+	return Table.new(out)
 
 end
 
-function table.splice(a, index, howmany, ...)
+function Table.splice(a, index, howmany, ...)
 	--[[
-	This function will remove a range of elements from a table.
+	This function will remove a range of elements from a Table.
 	... will insert at index
 	developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
 	]]
@@ -182,59 +183,57 @@ function table.splice(a, index, howmany, ...)
 	if not howmany then howmany = 0 end
 	local out = {}
 	for i = 1, index do
-		table.insert(out, a[i])
+		Table.insert(out, a[i])
 	end
 	for k,v in ipairs({...}) do
-		table.insert(out, v)
+		Table.insert(out, v)
 	end
 	for i = index + howmany + 1, #a do
-		table.insert(out, a[i])
+		Table.insert(out, a[i])
 	end
 
-	return table.new(out)
+	return Table.new(out)
 end
 
-function table.last(a)
+function Table.last(a)
 
 	--This will return the last item in a sorted array
 	return a[#a]
 
 end
 
-function table.choice(a)
+function Table.choice(a)
 
-	--Returns a random item from the table.
+	--Returns a random item from the Table.
 
-	assert(type(a) == "table",
-		"Parameter type needs to be of type 'table'.  Passed type: " .. type(a), 3)
+	assertTable(a)
 
 	local choice = math.random(#a)
 	return a[choice], choice
 
 end
 
-function table.choices(a, count)
+function Table.choices(a, count)
 
-	--Returns count number of random items from the table.
+	--Returns count number of random items from the Table.
 
-	assert(type(a) == "table",
-		"Parameter type needs to be of type 'table'.  Passed type: " .. type(a), 3)
+	assertTable(a)
 
 	local out = {}
-	local cache = table.clone(a)
+	local cache = Table.clone(a)
 	for i = 1, count do
-		local choice, key = table.choice(cache)
-		table.insert(out, choice)
-		table.remove(cache, key)
+		local choice, key = Table.choice(cache)
+		Table.insert(out, choice)
+		Table.remove(cache, key)
 	end
-	return table.new(out)
+	return Table.new(out)
 
 end
 
-function table.find(a, value)
+function Table.find(a, value)
 
 	--[[
-	This function will search a table for a value and return the index of the value.
+	This function will search a Table for a value and return the index of the value.
 	If the value is not found, it will return nil.
 	]]
 
@@ -249,10 +248,10 @@ function table.find(a, value)
 
 end
 
-function table.binarySearch(a, value)
+function Table.binarySearch(a, value)
 
 	--[[
-	This function will search a table for a value and return the index of the value.
+	This function will search a Table for a value and return the index of the value.
 	If the value is not found, it will return nil.
 	@Ensure a is sorted before using this function.
 	]]
@@ -275,7 +274,7 @@ function table.binarySearch(a, value)
 
 end
 
-function table.compare(a, b)
+function Table.compare(a, b)
 
 	--[[
 	This function will compare two tables and return true if they are the same.
@@ -287,7 +286,7 @@ function table.compare(a, b)
 	if a == b then return true end
 	if #a ~= #b then return false end
 
-	local clone = table.clone(b)
+	local clone = Table.clone(b)
 	for k,v in pairs(a) do
 		if clone[k] ~= v then
 			return false
@@ -295,11 +294,11 @@ function table.compare(a, b)
 		clone[k] = nil
 	end
 
-	return table.size(clone) == 0
+	return Table.size(clone) == 0
 
 end
 
-function table.unique(a)
+function Table.unique(a)
 
 	--[[
 	This will reduce a into it's unique values
@@ -310,44 +309,44 @@ function table.unique(a)
 	for k,v in pairs(a) do
 		if not uniqueSet[v] then
 			uniqueSet[v] = true
-			table.insert(unique, v)
+			Table.insert(unique, v)
 		end
 	end
-	return table.new(unique)
+	return Table.new(unique)
 
 end
 
-function table.gCondense(a, remove)
+function Table.gCondense(a, remove)
 
 	--[[
 	This will go through an array and remove all that match [remove].
-	This one returns the result of this.  table.condense will set the table to the result.
+	This one returns the result of this.  Table.condense will set the Table to the result.
 	]]
 
 	local out = {}
 	for k,v in pairs(a) do
 		if v ~= remove then
-			table.insert(out, v)
+			Table.insert(out, v)
 		end
 	end
-	return table.new(out)
+	return Table.new(out)
 
 end
 
-function table.condense(a, remove)
+function Table.condense(a, remove)
 	--[[
 	This will go through an array and remove all that match [remove].
-	This one will condense table passed.  table.gCondense will return a new table.
+	This one will condense Table passed.  Table.gCondense will return a new Table.
 	*This will work with tables with sparse indices (AKA tables like a = {}; a[2] = true)
 
-	I chose to use this algorithm to preserve table address and prevent iterating
-	  over the table twice.
+	I chose to use this algorithm to preserve Table address and prevent iterating
+	  over the Table twice.
 	]]
 
 	local newTab = {}
 	for k, v in pairs(a) do
 		if v ~= remove then
-			table.insert(newTab, v)
+			Table.insert(newTab, v)
 		end
 		a[k] = nil
 	end
@@ -360,16 +359,16 @@ function table.condense(a, remove)
 end
 
 
-function table.every(a, test)
+function Table.every(a, test)
 
 	--[[
 	Returns true if every element in this array satisfies the testing function.
 
 	example:
-	t = table.new({6,7,8})
+	t = Table.new({6,7,8})
 	print(t:every(function(v) return v > 4 end)) -- returns true
 		OR
-	print(table.every(t, function(v) return v == 1 end)) -- returns false
+	print(Table.every(t, function(v) return v == 1 end)) -- returns false
 
 	]]
 
@@ -382,40 +381,40 @@ function table.every(a, test)
 
 end
 
-function table.filter(a, test)
+function Table.filter(a, test)
 
 	--[[
 	Returns a new array containing all elements of the calling array
 	  for which the provided filtering function returns true.
 	]]
 
-	local out = table.new()
+	local out = Table.new()
 	for k,v in pairs(a) do
 		if test(k, v) then
-			out:insert(v)
+			Table.insert(out, v)
 		end
 	end
 	return out
 
 end
 
-function table.invert(a)
+function Table.invert(a)
 
 	--[[
 	Reverses the order of a
 	]]
 
 	for i = 1, math.floor(#a/2) do
-		table.swap(a, i, #a-(i-1))
+		Table.swap(a, i, #a-(i-1))
 	end
 
 end
 
-function table.shuffle(a)
+function Table.shuffle(a)
 
 	--[[
 		Implements Fisher-Yates Shuffle algorithm.
-		This directly shuffles table a
+		This directly shuffles Table a
 	]]
 
 	local length = #a
@@ -423,12 +422,12 @@ function table.shuffle(a)
 		local i = math.random(1, length)
 		length = length - 1
 
-		table.swap(a, length, i)
+		Table.swap(a, length, i)
 	end
 
 end
 
-function table.arrayIter(a, remove)
+function Table.arrayIter(a, remove)
 
 	--[[
 	This is a custom iterator that will return each item in the array for you to alter as needed.
@@ -440,12 +439,12 @@ function table.arrayIter(a, remove)
 	return function()
 		i = i + 1
 		if i <= size then return i, a[i] end
-		table.condense(a, remove)
+		Table.condense(a, remove)
 	end
 
 end
 
-function table.reverse(a)
+function Table.reverse(a)
 
 	--[[
 	This is an iterator that iterates backwards through the array
@@ -460,3 +459,5 @@ function table.reverse(a)
 	end
 
 end
+
+return Table
