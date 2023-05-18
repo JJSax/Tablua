@@ -2,8 +2,9 @@
 ## Welcome!
 This is a library to extend lua's table to enable tables to work like objects, and give more premade code to speed up development.
 
-Welcome to this Lua Table extention library Readme.  My goal of this was to make tables easier to work with and give more functions to work with.  
+Welcome to this Lua Table extention library Readme.  My goal of this was to make tables easier to work with and give more functions to work with.
 This is still in active development, and is still a **work in progress**.
+This Readme currently only applies to tableExt.  New data structures have been added since.
 
 ## Installation
 Drop your [tableExt.lua](tableExt.lua?raw=1) into your project and require it directly.
@@ -31,8 +32,8 @@ print(table.concat(x, ","))
 - This returns true if the keys of the array are ordered with no gaps, starting at 1.
 - If the table has keys that are not numerical, this will return false.
 
-`{1,2,3,4}` returns true.  
-`{[1] = 1, [3] = 2}` returns false; there is a gap in the keys  
+`{1,2,3,4}` returns true.
+`{[1] = 1, [3] = 2}` returns false; there is a gap in the keys
 `{["hello"] = "world", 1,2}` returns false; there is a string key.
 
 ### table.size(a)
@@ -125,7 +126,7 @@ Simply returns the last element of an array.  'nuff said.  Can make some code ea
 Iterates over `a` to find `value` and returns the index that it was found.  This iterates over all items until it finds the item.  If your array values are in ordered, use table.binarySearch for a faster search.
 
 ### table.binarySearch(a, value)
-Uses a [binary search](https://en.wikipedia.org/wiki/Binary_search_algorithm) to find value inside ordered array, `a`.  If your array is not ordered then this search may produce incorrect results.  
+Uses a [binary search](https://en.wikipedia.org/wiki/Binary_search_algorithm) to find value inside ordered array, `a`.  If your array is not ordered then this search may produce incorrect results.
 
 ```lua
 local x = table.new{1,3,4,5,7,8,9,12,15,16,17} -- this is in order
@@ -202,7 +203,7 @@ Reverses order of array `a` directly.  Retains table address.
 Uses the [Fisher-Yates shuffle](https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle) to shuffle the table without changing the table address.
 
 ### table.arrayIter(a[, remove])
-This is an iterator, use similar to pairs.  This condenses the array afterward using table.condense.  This comes with the same warnings as that function has.  
+This is an iterator, use similar to pairs.  This condenses the array afterward using table.condense.  This comes with the same warnings as that function has.
 This is useful when needing to delete things from an array, leaving no gaps.
 ```lua
 local x = table.new{1,2,3,4,5,6,7,8,9}
