@@ -373,7 +373,6 @@ function table.condense(a, remove)
 
 	I chose to use this algorithm to preserve table address and prevent iterating
 	  over the table twice.
-
 	]]
 
 	local newTab = {}
