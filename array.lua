@@ -314,25 +314,30 @@ end
 
 function array.condense(a, remove)
 
-	--[[ Read notes before using.
+	--[[
 	This will go through an array and remove all that match [remove].
 	This one will condense table passed.  table.gCondense will return a new table.
-	!WARNING: this uses a technique that alters a table whilst iterating it.
-	  I've tested this heavily, but more testing is needed to guarantee.
-	  If you use this and find it's messing up your tables, open a Github issue.
-	  My testing was using Löve2d on Lua 5.1;
-	   Testing pure LUA 5.4.3 this errors when called.
+	This will not work with tables with sparse indices (AKA tables like a = {}; a[2] = true)
+
 	I chose to use this algorithm to preserve table address and prevent iterating
 	  over the table twice.
+
+	Credit
+	https://stackoverflow.com/questions/12394841/safely-remove-items-from-an-array-table-while-iterating
+
 	]]
 
-	local nextAvailable = 1
-	for k,v in pairs(a) do
-		if v ~= remove then
-			local cache = v
-			a[k] = nil
-			a[nextAvailable] = cache
-			nextAvailable = nextAvailable + 1
+	local j, n = 1, #a;
+	for i = 1, n do
+		if a[i] ~= remove then
+			if (i ~= j) then
+				-- Keep i's value, move it to j's pos.
+				a[j] = a[i];
+				a[i] = nil;
+			end
+			j = j + 1;
+		else
+			a[i] = nil;
 		end
 	end
 
