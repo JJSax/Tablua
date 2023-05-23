@@ -35,6 +35,39 @@ test(
 )
 
 test(
+	"toggle",
+	function()
+		local tests = {
+			{false, 1}, -- shouldn't happen ever
+			{nil,   1},
+			{true, -1}
+		}
+
+		for k, v in pairs(tests) do
+			local s = Set.new()
+			for i = 1, 20 do
+				s:add(i)
+			end
+
+			if v[1] then
+				s:add("test")
+			end
+			s["test"] = v[1]
+
+			s:toggle("test")
+
+			if s["test"] == v[1] or s:size() ~= 20 + v[2] then
+				return false
+			end
+
+			return true
+
+		end
+	end
+
+)
+
+test(
 	"size",
 	function()
 		local s = Set.new()

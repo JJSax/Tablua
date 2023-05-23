@@ -21,6 +21,15 @@ function Set:remove(key)
 	self[key] = nil
 end
 
+function Set:toggle(key)
+	local sz, to = 1, true
+	if self[key] then
+		sz, to = -1, nil
+	end
+	self[key] = to
+	self[sizeName] = self[sizeName] + sz
+end
+
 function Set:size()
 	return self[sizeName]
 end
