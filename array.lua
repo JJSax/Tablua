@@ -1,5 +1,8 @@
 
-local array = table
+local array = {}
+for k, v in pairs(table) do
+	array[k] = v
+end
 array.__index = array
 array.__extVersion = "0.1.55"
 
@@ -349,10 +352,10 @@ function array.every(a, test)
 	Returns true if every element in this array satisfies the testing function.
 
 	example:
-	t = table.new({6,7,8})
+	t = array.new({6,7,8})
 	print(t:every(function(v) return v > 4 end)) -- returns true
 		OR
-	print(table.every(t, function(v) return v == 1 end)) -- returns false
+	print(array.every(t, function(v) return v == 1 end)) -- returns false
 
 	]]
 
