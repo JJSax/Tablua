@@ -504,6 +504,51 @@ test(
 	true
 )
 
+test(
+	"mipairs",
+	function()
+		local x = {1,2,3,4,5}
+		local check = {3,4,5,1,2}
+		local iter = 1
+		for i, v in array.mipairs(x, 3) do
+			if v ~= check[iter] then return false end
+			iter = iter + 1
+		end
+		return true
+	end,
+	true
+)
+
+test(
+	"mipairsStartAtEnd",
+	function()
+		local x = {1,2,3,4,5,6,7,8,9,0}
+		local check = {0,1,2,3,4,5,6,7,8,9}
+		local iter = 1
+		for i, v in array.mipairs(x, 10) do
+			if v ~= check[iter] then return false end
+			iter = iter + 1
+		end
+		return true
+	end,
+	true
+)
+
+
+test(
+	"mipairsAtStart",
+	function()
+		local x = {1,2,3,4,5,6,7,8,9,0}
+		local check = {1,2,3,4,5,6,7,8,9,0}
+		local iter = 1
+		for i, v in array.mipairs(x, 1) do
+			if v ~= check[iter] then return false end
+			iter = iter + 1
+		end
+		return true
+	end,
+	true
+)
 
 for k,v in ipairs(history) do
 	print(k, v)

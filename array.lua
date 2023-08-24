@@ -16,7 +16,7 @@ end
 
 local function assertTable(t)
 	assert(type(t) == "table",
-		"Parameter type needs to be of type \"table\".  Passed type: "..type(t), 4)
+		'Parameter type needs to be of type "table".  Passed type: '..type(t), 4)
 end
 
 -------------------------------------------------
@@ -439,6 +439,27 @@ function array.reverse(a)
 		i = i - 1
 		if i > 0 then
 			return i, a[i]
+		end
+	end
+
+end
+
+function array.mipairs(array, mi)
+
+	--[[
+	This is an iterator that wraps back to the start to complete the iteration.
+	Works like ipairs, but you can start in the middle.
+	@mi is the part of the array you wish to start at.
+	{1,2,3,4,5} with mi = 3 would iterate as [3,4,5,1,2]
+	]]
+
+	assert(mi <= #array and mi > 0, "Attempt to start iteration out of bounds.")
+	local iterations = -1
+	return function()
+		iterations = iterations + 1
+		if iterations < #array then
+			local pos = (mi + iterations - 1) % #array + 1
+			return pos, array[pos]
 		end
 	end
 
