@@ -16,11 +16,36 @@ local function test(label, test, expect)
 end
 
 test(
+	"newEmpty",
+	function()
+		local s = Set.new()
+		return type(s) == "table" and s:size() == 0
+	end
+)
+
+test(
+	"newPopulated",
+	function()
+		local s = Set.new{1, 2, 3, "a", "b", "c"}
+		return s:size() == 6
+	end
+)
+
+test(
 	"add",
 	function()
 		local s = Set.new()
 		s:add("HELLO")
 		return s["HELLO"]
+	end
+)
+
+test(
+	"padd",
+	function()
+		local s = Set.new()
+		s:padd{1, 2, 3, "a", "b", "c"}
+		return s:size() == 6
 	end
 )
 

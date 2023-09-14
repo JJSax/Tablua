@@ -4,8 +4,10 @@ local Set = {}
 Set.__index = Set
 local sizeName = "__SIZEOFSETPROTECTEDVARIABLENAMESPACE__"
 
-function Set.new()
-	return setmetatable({[sizeName] = 0}, Set)
+function Set.new(keys)
+	local self = setmetatable({[sizeName] = 0}, Set)
+	self:padd(keys)
+	return self
 end
 
 function Set:add(key)
@@ -13,6 +15,11 @@ function Set:add(key)
 	if key == nil then return end
 	self[sizeName] = self[sizeName] + 1
 	self[key] = true
+end
+
+function Set:padd(keys)
+	if keys == nil then return end
+	for i, v in ipairs(keys) do self:add(v) end
 end
 
 function Set:remove(key)
