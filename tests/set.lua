@@ -41,6 +41,17 @@ test(
 )
 
 test(
+	"add2",
+	function()
+		local s = Set.new()
+		s:add("HELLO")
+		s:add("HELLO")
+		s:add("HELLO")
+		return s["HELLO"] and s:size() == 1
+	end
+)
+
+test(
 	"padd",
 	function()
 		local s = Set.new()
@@ -56,6 +67,21 @@ test(
 		s:add("HELLO")
 		s:remove("HELLO")
 		return s["HELLO"] == nil
+	end
+)
+
+test(
+	"remove2",
+	function()
+		local s = Set.new{1,2,3,4,5,6}
+		if s:size() ~= 6 then return false end
+		s:remove(1)
+		s:remove(3)
+		s:remove(5)
+		s:remove(5)
+		s:remove(5)
+		if s:size() ~= 3 then return false end
+		return true
 	end
 )
 

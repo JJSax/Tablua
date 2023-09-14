@@ -12,7 +12,7 @@ end
 
 function Set:add(key)
 	assert(key ~= sizeName, "Attempt to use protected key.")
-	if key == nil then return end
+	if key == nil or self[key] then return end
 	self[sizeName] = self[sizeName] + 1
 	self[key] = true
 end
@@ -23,12 +23,14 @@ function Set:padd(keys)
 end
 
 function Set:remove(key)
-	if key == nil then return end
+	assert(key ~= sizeName, "Attempt to use protected key.")
+	if key == nil or not self[key] then return end
 	self[sizeName] = self[sizeName] - 1
 	self[key] = nil
 end
 
 function Set:toggle(key)
+	assert(key ~= sizeName, "Attempt to use protected key.")
 	local sz, to = 1, true
 	if self[key] then
 		sz, to = -1, nil
