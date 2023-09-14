@@ -41,6 +41,16 @@ function Set:size()
 	return self[sizeName]
 end
 
+function Set:list()
+	local out = {}
+	for k, v in pairs(self) do
+		if k ~= sizeName then
+			table.insert(out, k)
+		end
+	end
+	return out
+end
+
 function Set:clone()
 	local out = {}
 	for k,v in pairs(self) do

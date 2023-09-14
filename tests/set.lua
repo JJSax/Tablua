@@ -103,6 +103,31 @@ test(
 )
 
 test(
+	"list",
+	function()
+		local s = Set.new{1,2,3,"a", "b", "c"}
+		s:remove("c") -- ensure removing doesn't cause issues
+		local control = {
+			[1] = true,
+			[2] = true,
+			[3] = true,
+			a = true,
+			b = true
+		}
+
+		local l = s:list()
+		for i, v in ipairs(l) do
+			if not control[v] then return false end
+			control[v] = false
+		end
+		for k,v in pairs(control) do
+			if v then return false end
+		end
+		return true
+	end
+)
+
+test(
 	"clone",
 	function()
 		local s = Set.new()
