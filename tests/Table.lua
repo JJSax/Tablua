@@ -1,4 +1,4 @@
-local Table = require "Tablua"
+local Table = require "tablua"
 print(_VERSION)
 local history = {}
 local fail = "%s test failed at line %d. Error: %s"

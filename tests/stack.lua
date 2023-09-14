@@ -6,7 +6,7 @@ local succeed = "%s test successful"
 local totals = {[fail] = 0, [succeed] = 0}
 
 local function test(label, test, expect)
-	expect = expect or true
+	expect = expect == nil and true or expect
 	local status, msg = pcall(test)
 	local phrase = (not status or msg ~= expect) and fail or succeed
 	totals[phrase] = totals[phrase] + 1
