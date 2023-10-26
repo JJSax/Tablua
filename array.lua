@@ -1,4 +1,7 @@
 
+---@class Array[]
+---@field insert function
+---@field remove function
 local array = {}
 for k, v in pairs(table) do
 	array[k] = v
@@ -24,6 +27,7 @@ end
 
 -------------------------------------------------
 
+---@return Array
 function array.new(t)
 	return setmetatable(t or {}, array)
 end

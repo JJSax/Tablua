@@ -22,6 +22,9 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ]]
 
+---@class Table
+---@field insert function
+---@field remove function
 local Table = {}
 
 for k, v in pairs(table) do
@@ -44,6 +47,7 @@ end
 
 -------------------------------------------------
 
+---@return Table
 function Table.new(t)
 	return setmetatable(t or {}, Table)
 end
@@ -132,7 +136,7 @@ function Table.join(a, ...)
 
 	--[[
 	This function will join multiple tables together.
- 	Tables with string keys will set a[key] to b[key] value.
+	Tables with string keys will set a[key] to b[key] value.
 	]]
 
 	assertTable(a)

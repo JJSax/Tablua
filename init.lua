@@ -9,10 +9,10 @@ local Tablua = require(HERE..".tablua.tablua")
 
 local tablua = {}
 
-tablua.Set = Set.new
-tablua.Array = Array.new
-tablua.Queue = Queue.new
-tablua.Stack = Stack.new
-tablua.Tablua = Tablua.new
+tablua.Set = Set.new ---@type Set
+tablua.Array = Array.new ---@type Array
+tablua.Queue = Queue.new ---@type Queue
+tablua.Stack = Stack.new ---@type Stack
+tablua.Tablua = Tablua.new ---@type Table
 
 return tablua

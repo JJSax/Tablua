@@ -1,9 +1,10 @@
 
-
+---@class Set
 local Set = {}
 Set.__index = Set
 local sizeName = "__SIZEOFSETPROTECTEDVARIABLENAMESPACE__"
 
+---@return Set
 function Set.new(keys)
 	local self = setmetatable({[sizeName] = 0}, Set)
 	self:padd(keys)
@@ -31,7 +32,7 @@ end
 
 function Set:toggle(key)
 	assert(key ~= sizeName, "Attempt to use protected key.")
-	local sz, to = 1, true
+	local sz, to = 1, true ---@type number,boolean|nil
 	if self[key] then
 		sz, to = -1, nil
 	end

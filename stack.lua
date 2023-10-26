@@ -2,11 +2,12 @@
 -- Think of this data structure like a stack of paper
 -- can put on the top of the stack,
 -- then take it off the top
-
+---@class Stack
 local stack = {}
 stack.__index = stack
 local sizeName = "__SIZEOFSETPROTECTEDVARIABLENAMESPACE__"
 
+---@return Stack
 function stack.new(input)
 	input = input or {}
 	input[sizeName] = 0

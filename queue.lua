@@ -1,4 +1,4 @@
-
+---@class Queue
 local queue = {}
 queue.__index = queue
 queue.__extVersion = "0.0.1"
@@ -18,6 +18,7 @@ end
 
 -------------------------------------------------
 
+---@return Queue
 function queue.new(t)
 	t = t or {}
 	t.size = #t

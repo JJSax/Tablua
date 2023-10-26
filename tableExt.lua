@@ -1,4 +1,4 @@
-
+---@deprecated
 --[[
 Copyright <2022-2023> <COPYRIGHT Jared Augerot (JJSax)>
 
