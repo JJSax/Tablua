@@ -7,7 +7,7 @@ for k, v in pairs(table) do
 	array[k] = v
 end
 array.__index = array
-array.__extVersion = "0.1.55"
+array.__extVersion = "0.1.56"
 
 -- This version has not been fully tested.
 -- Since it alters lua's default table namespace, use at your own risk.
@@ -75,7 +75,7 @@ function array.swap(a, first, second)
 
 end
 
-function array.qclone(a)
+function array.shallowClone(a)
 
 	--[[
 	This function is a simple clone.  Only meant for single layer tables and arrays.
@@ -91,6 +91,11 @@ function array.qclone(a)
 	end
 	return array.new(output)
 
+end
+
+---@deprecated Use shallowClone
+function array.qclone(a)
+	return array.shallowClone(a)
 end
 
 function array.clone(a)

@@ -77,20 +77,20 @@ test(
 )
 
 test(
-	"qclone1",
+	"shallowClone1",
 	function()
 		local x = {1,2,3}
-		local y = array.qclone(x)
+		local y = array.shallowClone(x)
 		return x ~= y and x[1] == y[1] and x[2] == y[2] and x[3] == y[3]
 	end,
 	true
 )
 
 test(
-	"qclone2",
+	"shallowClone2",
 	function()
 		local x = {1,2,3}
-		local y = array.qclone(x)
+		local y = array.shallowClone(x)
 		y[1] = 4
 		return x ~= y and x[1] == y[1] and x[2] == y[2] and x[3] == y[3]
 	end,

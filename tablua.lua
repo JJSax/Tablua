@@ -8,7 +8,7 @@ for k, v in pairs(table) do
 	Table[k] = v
 end
 Table.__index = Table
-Table.__extVersion = "0.4.1"
+Table.__extVersion = "0.4.2"
 
 
 local function assert(condition, message, stack)
@@ -72,7 +72,7 @@ function Table.swap(a, first, second)
 
 end
 
-function Table.qclone(a)
+function Table.shallowClone(a)
 
 	--[[
 	This function is a simple clone.  Only meant for single layer tables and arrays.
@@ -88,6 +88,11 @@ function Table.qclone(a)
 	end
 	return Table.new(output)
 
+end
+
+---@deprecated use shallowClone
+function Table.qclone(a)
+	return Table.shallowClone(a)
 end
 
 function Table.clone(a)

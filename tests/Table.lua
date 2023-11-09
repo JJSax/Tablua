@@ -67,20 +67,20 @@ test(
 )
 
 test(
-	"qclone1",
+	"shallowclone1",
 	function()
 		local x = {1,2,3}
-		local y = Table.qclone(x)
+		local y = Table.shallowClone(x)
 		return x ~= y and x[1] == y[1] and x[2] == y[2] and x[3] == y[3]
 	end,
 	true
 )
 
 test(
-	"qclone2",
+	"shallowclone2",
 	function()
 		local x = {1,2,3}
-		local y = Table.qclone(x)
+		local y = Table.shallowClone(x)
 		y[1] = 4
 		return x ~= y and x[1] == y[1] and x[2] == y[2] and x[3] == y[3]
 	end,
@@ -481,7 +481,7 @@ test(
 	function()
 		local newFuncs = {
 			"new", "isArray", "size", "swap",
-			"qclone", "clone", "join", "slice",
+			"qclone", "shallowClone", "clone", "join", "slice",
 			"splice", "last", "choice", "choices",
 			"find", "binarySearch", "compare",
 			"unique", "gCondense", "condense",
