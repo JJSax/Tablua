@@ -7,12 +7,7 @@ for k, v in pairs(table) do
 	array[k] = v
 end
 array.__index = array
-array.__extVersion = "0.1.56"
-
--- This version has not been fully tested.
--- Since it alters lua's default table namespace, use at your own risk.
--- It is very possible that this may break tables and a custom namespace will be used instead.
-
+array.__extVersion = "0.1.57"
 
 local function assert(condition, message, stack)
 	if not condition then
