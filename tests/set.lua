@@ -19,7 +19,7 @@ test(
 	"newEmpty",
 	function()
 		local s = Set.new()
-		return type(s) == "table" and s:size() == 0
+		return type(s) == "table" and #s == 0
 	end
 )
 
@@ -27,7 +27,7 @@ test(
 	"newPopulated",
 	function()
 		local s = Set.new{1, 2, 3, "a", "b", "c"}
-		return s:size() == 6
+		return #s == 6
 	end
 )
 
@@ -47,7 +47,7 @@ test(
 		s:add("HELLO")
 		s:add("HELLO")
 		s:add("HELLO")
-		return s["HELLO"] and s:size() == 1
+		return s["HELLO"] and #s == 1
 	end
 )
 
@@ -56,7 +56,7 @@ test(
 	function()
 		local s = Set.new()
 		s:padd{1, 2, 3, "a", "b", "c"}
-		return s:size() == 6
+		return #s == 6
 	end
 )
 
@@ -74,13 +74,13 @@ test(
 	"remove2",
 	function()
 		local s = Set.new{1,2,3,4,5,6}
-		if s:size() ~= 6 then return false end
+		if #s ~= 6 then return false end
 		s:remove(1)
 		s:remove(3)
 		s:remove(5)
 		s:remove(5)
 		s:remove(5)
-		if s:size() ~= 3 then return false end
+		if #s ~= 3 then return false end
 		return true
 	end
 )
@@ -107,7 +107,7 @@ test(
 
 			s:toggle("test")
 
-			if s["test"] == v[1] or s:size() ~= 20 + v[2] then
+			if s["test"] == v[1] or #s ~= 20 + v[2] then
 				return false
 			end
 
@@ -159,21 +159,8 @@ test(
 		local s = Set.new()
 		s:add("HELLO")
 		s:add("WORLD")
-
 		local f = s:clone()
-
-		local sKeys = {}
-		for k, v in pairs(s) do
-			sKeys[k] = true
-		end
-		for k,v in pairs(f) do
-			sKeys[k] = nil
-		end
-
-		for k,v in pairs(sKeys) do
-			return false
-		end
-		return s ~= f
+		return f == s
 	end
 )
 
@@ -200,8 +187,40 @@ test(
 	end
 )
 
+test(
+	"lenOperator",
+	function()
+		local s = Set.new{1,2,3,"a", "b", "c"}
+		return #s == 6
+	end
+)
 
+test(
+	"lenOperator",
+	function()
+		local s = Set.new{1,2,3,"a", "b", "c"}
+		s:remove("c") -- ensure removing doesn't cause issues
+		return #s == 5
+	end
+)
 
+test(
+	"eqOperator_true",
+	function()
+		local a = Set.new{1,2,3,"a", "b", "c"}
+		local b = Set.new{1,2,3,"a", "b", "c"}
+		return a == b
+	end
+)
+
+test(
+	"eqOperator_false",
+	function()
+		local a = Set.new{1,2,3,"a", "b", "c"}
+		local b = Set.new{4,2,3,"a", "b", "c"}
+		return a ~= b
+	end
+)
 
 
 for k,v in ipairs(history) do

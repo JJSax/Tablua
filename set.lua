@@ -1,7 +1,7 @@
 
 ---@class Set
 local Set = {}
-Set.__extVersion = "0.0.5"
+Set.__extVersion = "0.0.6"
 Set.__index = Set
 local setsize = {} -- use in key of the set to store it's size.
 
@@ -41,6 +41,7 @@ function Set:toggle(key)
 	self[setsize] = self[setsize] + sz
 end
 
+---@deprecated use #Set
 function Set:size()
 	return self[setsize]
 end
@@ -70,6 +71,21 @@ function Set:iter()
 		if key == setsize then key = next(self, key) end
 		return key
 	end
+end
+
+function Set:__len()
+	return self[setsize]
+end
+
+function Set:__eq(other)
+	if other[setsize] and #other ~= #self then return false end
+	local matchCount = 0
+	for k in self:iter() do
+		if other[k] then
+			matchCount = matchCount + 1
+		end
+	end
+	return matchCount == #self
 end
 
 return Set
