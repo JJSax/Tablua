@@ -44,6 +44,17 @@ test(
 )
 
 test(
+	"peek",
+	function()
+		local s = Stack.new()
+		s:push("HELLO")
+		s:push("WORLD")
+		local o = s:peek()
+		return o == "WORLD"
+	end
+)
+
+test(
 	"isEmpty",
 	function()
 		local s = Stack.new()

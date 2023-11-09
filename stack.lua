@@ -5,38 +5,28 @@
 ---@class Stack
 local stack = {}
 stack.__index = stack
-local sizeName = "__SIZEOFSETPROTECTEDVARIABLENAMESPACE__"
+stack.__extVersion = "0.0.2"
 
 ---@return Stack
 function stack.new(input)
-	input = input or {}
-	input[sizeName] = 0
-
-	for i, v in ipairs(input) do
-		input[sizeName] = input[sizeName] + 1
-		assert(v ~= sizeName, "Attempt to use protected namespace.")
-	end
-
-	return setmetatable(input, stack)
+	return setmetatable(input or {}, stack)
 end
 
 function stack:push(input)
-	assert(input ~= sizeName, "Attempt to use protected namespace.")
-	self[sizeName] = self[sizeName] + 1
 	table.insert(self, input)
 end
 
 function stack:pop()
-	self[sizeName] = self[sizeName] - 1
 	return table.remove(self, #self)
 end
 
-function stack:isEmpty()
-	return self[sizeName] == 0
+function stack:peek()
+	return self[#self]
 end
 
-function stack:getSize()
-	return self[sizeName]
-end
+---@deprecated Use #stack == 0
+function stack:isEmpty() return #self == 0 end
+---@deprecated Use #stack
+function stack:getSize() return #self end
 
 return stack
