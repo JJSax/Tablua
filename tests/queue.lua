@@ -122,7 +122,7 @@ test(
 			items = true
 			break
 		end
-		return q:getSize() == 0 and not items
+		return #q == 0 and not items
 	end
 )
 
@@ -153,7 +153,7 @@ test(
 			end
 			it = it + 1
 		end
-		return it == q:getSize() + 1 -- account for last +1
+		return it == #q + 1 -- account for last +1
 	end
 )
 

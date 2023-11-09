@@ -1,8 +1,7 @@
 ---@class Queue
 local queue = {}
 queue.__index = queue
-queue.__extVersion = "0.0.2"
-local queueSize = {} -- use in key of the set to store it's size.
+queue.__extVersion = "0.0.3"
 
 local function assert(condition, message, stack)
 	if not condition then
@@ -21,18 +20,16 @@ end
 ---@return Queue
 function queue.new(t)
 	t = t or {}
-	t[queueSize] = #t
+	-- t[queueSize] = #t
 	return setmetatable(t or {}, queue)
 end
 
 function queue:enqueue(value)
-	self[queueSize] = self[queueSize] + 1
 	table.insert(self, value)
 end
 queue.add = queue.enqueue
 
 function queue:dequeue()
-	self[queueSize] = self[queueSize] - 1
 	return table.remove(self, 1)
 end
 queue.remove = queue.dequeue
@@ -42,11 +39,12 @@ function queue:peek()
 end
 queue.front = queue.peek
 
-function queue:isEmpty() return self[queueSize] == 0 end
-function queue:getSize() return self[queueSize] end
+---@deprecated Use #queue == 0
+function queue:isEmpty() return #self == 0 end
+---@deprecated Use #queue
+function queue:getSize() return #self end
 function queue:clear()
 	-- making new table may be faster.  Consider if you need the same memory address
-	self[queueSize] = 0
 	for k in ipairs(self) do
 		self[k] = nil
 	end
