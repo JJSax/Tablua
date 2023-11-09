@@ -177,6 +177,29 @@ test(
 	end
 )
 
+test(
+	"iterator",
+	function ()
+		local s = Set.new()
+		local t = {}
+		for i = 1, 20 do
+			s:add(i)
+			t[i] = true
+		end
+
+		for k in s:iter() do
+			if type(k) == "table" then return false end
+			t[k] = false
+		end
+
+		local total = 0
+		for k,v in pairs(t) do
+			if v then return false end
+		end
+		return true
+	end
+)
+
 
 
 

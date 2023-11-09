@@ -1,20 +1,21 @@
 
 ---@class Set
 local Set = {}
+Set.__extVersion = "0.0.5"
 Set.__index = Set
-local sizeName = "__SIZEOFSETPROTECTEDVARIABLENAMESPACE__"
+local setsize = {} -- use in key of the set to store it's size.
 
 ---@return Set
 function Set.new(keys)
-	local self = setmetatable({[sizeName] = 0}, Set)
+	local self = setmetatable({[setsize] = 0}, Set)
 	self:padd(keys)
 	return self
 end
 
 function Set:add(key)
-	assert(key ~= sizeName, "Attempt to use protected key.")
+	assert(key ~= setsize, "Attempt to use protected key.")
 	if key == nil or self[key] then return end
-	self[sizeName] = self[sizeName] + 1
+	self[setsize] = self[setsize] + 1
 	self[key] = true
 end
 
@@ -24,30 +25,30 @@ function Set:padd(keys)
 end
 
 function Set:remove(key)
-	assert(key ~= sizeName, "Attempt to use protected key.")
+	assert(key ~= setsize, "Attempt to use protected key.")
 	if key == nil or not self[key] then return end
-	self[sizeName] = self[sizeName] - 1
+	self[setsize] = self[setsize] - 1
 	self[key] = nil
 end
 
 function Set:toggle(key)
-	assert(key ~= sizeName, "Attempt to use protected key.")
+	assert(key ~= setsize, "Attempt to use protected key.")
 	local sz, to = 1, true ---@type number,boolean|nil
 	if self[key] then
 		sz, to = -1, nil
 	end
 	self[key] = to
-	self[sizeName] = self[sizeName] + sz
+	self[setsize] = self[setsize] + sz
 end
 
 function Set:size()
-	return self[sizeName]
+	return self[setsize]
 end
 
 function Set:list()
 	local out = {}
 	for k, v in pairs(self) do
-		if k ~= sizeName then
+		if k ~= setsize then
 			table.insert(out, k)
 		end
 	end
@@ -60,6 +61,15 @@ function Set:clone()
 		out[k] = v
 	end
 	return setmetatable(out, Set)
+end
+
+function Set:iter()
+	local key
+	return function()
+		key = next(self, key)
+		if key == setsize then key = next(self, key) end
+		return key
+	end
 end
 
 return Set
