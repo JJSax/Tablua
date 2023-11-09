@@ -49,7 +49,7 @@ x:swap(1,2)
 -- x is now == {2,1,3}
 ```
 
-### table.qclone(a)
+### table.shallowClone(a)
 This is a quick clone of a table.  This allows you to modify the clone without modifying the original table.  What makes this quick is it only clones one layer deep.  If you need to clone a nested table, use table.clone.
 
 ```lua
@@ -58,17 +58,17 @@ local b = a
 b[1] = "hello"
 print(a[1]) -- prints "hello", not 1 because changing b changes a too.
 ```
-Instead qclone simple tables with qclone
+Instead shallowClone simple tables with shallowClone
 ```lua
 local a = table.new{1,2,3}
-local b = a:qclone()
+local b = a:shallowClone()
 b[1] = "hello"
 print(a[1]) -- prints 1
 print(b[1]) -- prints "hello"
 ```
 
 ### table.clone(a)
-This works much like table.qclone, but will also clone nested tables.
+This works much like table.shallowClone, but will also clone nested tables.
 
 ```lua
 local a = {1,2,3, {x = 4, y = 5} }
