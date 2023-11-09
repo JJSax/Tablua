@@ -8,7 +8,7 @@ for k, v in pairs(table) do
 	Table[k] = v
 end
 Table.__index = Table
-Table.__extVersion = "0.4.0"
+Table.__extVersion = "0.4.1"
 
 
 local function assert(condition, message, stack)
