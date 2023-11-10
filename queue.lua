@@ -19,8 +19,6 @@ end
 
 ---@return Queue
 function queue.new(t)
-	t = t or {}
-	-- t[queueSize] = #t
 	return setmetatable(t or {}, queue)
 end
 
@@ -74,15 +72,7 @@ function queue:clone()
 
 end
 
-function queue:toString(delimiter)
-	local s = ""
-	for i, v in ipairs(self) do
-		assert(type(v) == "string" or type(v) == "number", "Invalid value in queue.")
-		s = s..v..delimiter
-	end
-	s = s:sub(1, -#delimiter-1)
-	return s
-end
+queue.toString = table.concat
 
 
 
