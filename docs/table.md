@@ -124,6 +124,7 @@ local a = tablua.new{"hello", "world"}
 local b = tablua.new{"hello", "world"}
 local c = tablua.new{"hello", "there"}
 print(a:compare(b)) -- prints true
+print(a == b) -- prints false, as they don't share their address.
 print(a:compare(c)) -- prints false
 ```
 
@@ -132,7 +133,7 @@ Reduces the table:`a` to its unique values.
 Returns: A new table containing unique values.
 
 ```lua
-local a = tablua.new{1,2,3,3,4,5,5,5,5,6,7}
+local a = tablua.new{3,1,2,3,3,4,5,5,8,5,5,6,7}
 local b = a:unique() -- {1,2,3,4,5,6,7}
 ```
 
@@ -155,7 +156,7 @@ any?: `remove` Value to remove.
 ```lua
 local a = tablua.new{1,2,3,4,5}
 a[3] = nil
-a:gCondense() -- {1,2,4,5}, no need to say x = a:gCondense()
+a:condense() -- {1,2,4,5}, no need to say x = a:condense()
 ```
 
 ### Table.every(a, test):
