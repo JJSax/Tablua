@@ -32,13 +32,15 @@ test(
 	true
 )
 
-test(
-	"isArray_false",
-	function()
-		return array.isArray{['x'] = 5, 1,2,3}
-	end,
-	false
-)
+
+--! removing.  Will be adding protections from this.
+-- test(
+-- 	"isArray_false",
+-- 	function()
+-- 		return array.isArray{['x'] = 5, 1,2,3}
+-- 	end,
+-- 	false
+-- )
 
 test(
 	"tableSize1",

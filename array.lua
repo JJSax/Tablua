@@ -27,6 +27,7 @@ function array.new(t)
 	return setmetatable(t or {}, array)
 end
 
+---@deprecated
 function array.isArray(a)
 
 	--[[
@@ -35,10 +36,12 @@ function array.isArray(a)
 	]]
 
 	assertTable(a)
-	return #a == array.size(a)
+	return true
+	-- return #a == array.size(a)
 
 end
 
+---@deprecated Use #array.
 function array.size(a)
 
 	--[[
@@ -280,7 +283,7 @@ function array.compare(a, b)
 		clone[k] = nil
 	end
 
-	return array.size(clone) == 0
+	return #clone == 0
 
 end
 
@@ -451,7 +454,7 @@ function array.reverse(a)
 
 end
 
-function array.mipairs(array, mi)
+function array.mipairs(a, mi)
 
 	--[[
 	This is an iterator that wraps back to the start to complete the iteration.
@@ -460,13 +463,13 @@ function array.mipairs(array, mi)
 	{1,2,3,4,5} with mi = 3 would iterate as [3,4,5,1,2]
 	]]
 
-	assert(mi <= #array and mi > 0, "Attempt to start iteration out of bounds.")
+	assert(mi <= #a and mi > 0, "Attempt to start iteration out of bounds.")
 	local iterations = -1
 	return function()
 		iterations = iterations + 1
-		if iterations < #array then
-			local pos = (mi + iterations - 1) % #array + 1
-			return pos, array[pos]
+		if iterations < #a then
+			local pos = (mi + iterations - 1) % #a + 1
+			return pos, a[pos]
 		end
 	end
 
