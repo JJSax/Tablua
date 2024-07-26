@@ -25,35 +25,19 @@ local function arraysAreEqual(x, original)
 end
 
 test(
-	"isArray_true",
-	function()
-		return array.isArray{1,2,3}
-	end,
-	true
-)
-
-
---! removing.  Will be adding protections from this.
--- test(
--- 	"isArray_false",
--- 	function()
--- 		return array.isArray{['x'] = 5, 1,2,3}
--- 	end,
--- 	false
--- )
-
-test(
 	"tableSize1",
 	function()
-		return array.size{['x'] = 5, 1,2,3}
+		local arr = array.new{['x'] = 5, 1,2,3}
+		return #arr
 	end,
-	4
+	3
 )
 
 test(
 	"tableSize2",
 	function()
-		return array.size{1,2,3}
+		local arr = array.new{1,2,3}
+		return #arr
 	end,
 	3
 )

@@ -7,7 +7,7 @@ for k, v in pairs(table) do
 	array[k] = v
 end
 array.__index = array
-array.__extVersion = "0.1.57"
+array.__extVersion = "0.1.58"
 
 local function assert(condition, message, stack)
 	if not condition then
@@ -25,38 +25,6 @@ end
 ---@return Array
 function array.new(t)
 	return setmetatable(t or {}, array)
-end
-
----@deprecated
-function array.isArray(a)
-
-	--[[
-	Returns if the table is an ordered array.
-	This does iterate through all items in the table to get the count.
-	]]
-
-	assertTable(a)
-	return true
-	-- return #a == array.size(a)
-
-end
-
----@deprecated Use #array.
-function array.size(a)
-
-	--[[
-	Works like #table but works for tables with string keys and non sequence number keys
-	If the table is an array, use #tableName
-	]]
-
-	assertTable(a)
-
-	local count = 0
-	for k,v in pairs(a) do
-		count = count + 1
-	end
-	return count
-
 end
 
 function array.swap(a, first, second)
@@ -89,11 +57,6 @@ function array.shallowClone(a)
 	end
 	return array.new(output)
 
-end
-
----@deprecated Use shallowClone
-function array.qclone(a)
-	return array.shallowClone(a)
 end
 
 function array.clone(a)
