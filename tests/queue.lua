@@ -78,26 +78,10 @@ test(
 )
 
 test(
-	"isEmpty",
-	function()
-		local q = queue.new{}
-		return q:isEmpty() == true
-	end
-)
-
-test(
-	"isNotEmpty",
-	function()
-		local q = queue.new{2}
-		return q:isEmpty() == false
-	end
-)
-
-test(
 	"sizeFromStart",
 	function()
 		local q = queue.new{1,2,3}
-		return q:getSize() == 3
+		return #q == 3
 	end
 )
 
@@ -108,7 +92,7 @@ test(
 		for i = 1, 3 do
 			q:add(i)
 		end
-		return q:getSize() == 3
+		return #q == 3
 	end
 )
 

@@ -5,7 +5,7 @@
 ---@class Stack
 local stack = {}
 stack.__index = stack
-stack.__extVersion = "0.0.2"
+stack.__extVersion = "0.0.3"
 
 ---@return Stack
 function stack.new(input)
@@ -23,10 +23,5 @@ end
 function stack:peek()
 	return self[#self]
 end
-
----@deprecated Use #stack == 0
-function stack:isEmpty() return #self == 0 end
----@deprecated Use #stack
-function stack:getSize() return #self end
 
 return stack

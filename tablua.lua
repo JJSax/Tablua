@@ -8,7 +8,7 @@ for k, v in pairs(table) do
 	Table[k] = v
 end
 Table.__index = Table
-Table.__extVersion = "0.4.2"
+Table.__extVersion = "0.4.3"
 
 
 local function assert(condition, message, stack)
@@ -88,11 +88,6 @@ function Table.shallowClone(a)
 	end
 	return Table.new(output)
 
-end
-
----@deprecated use shallowClone
-function Table.qclone(a)
-	return Table.shallowClone(a)
 end
 
 function Table.clone(a)

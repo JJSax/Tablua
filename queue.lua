@@ -1,7 +1,7 @@
 ---@class Queue
 local queue = {}
 queue.__index = queue
-queue.__extVersion = "0.0.3"
+queue.__extVersion = "0.0.4"
 
 local function assert(condition, message, stack)
 	if not condition then
@@ -37,10 +37,6 @@ function queue:peek()
 end
 queue.front = queue.peek
 
----@deprecated Use #queue == 0
-function queue:isEmpty() return #self == 0 end
----@deprecated Use #queue
-function queue:getSize() return #self end
 function queue:clear()
 	-- making new table may be faster.  Consider if you need the same memory address
 	for k in ipairs(self) do

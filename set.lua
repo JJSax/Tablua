@@ -1,7 +1,7 @@
 
 ---@class Set
 local Set = {}
-Set.__extVersion = "0.0.6"
+Set.__extVersion = "0.0.7"
 Set.__index = Set
 local setsize = {} -- use in key of the set to store it's size.
 
@@ -39,11 +39,6 @@ function Set:toggle(key)
 	end
 	self[key] = to
 	self[setsize] = self[setsize] + sz
-end
-
----@deprecated use #Set
-function Set:size()
-	return self[setsize]
 end
 
 function Set:list()

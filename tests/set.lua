@@ -124,7 +124,7 @@ test(
 		local s = Set.new()
 		s:add("HELLO")
 		s:add("WORLD")
-		return s:size() == 2
+		return #s == 2
 	end
 )
 

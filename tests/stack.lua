@@ -60,7 +60,7 @@ test(
 		local s = Stack.new()
 		s:push("HELLO")
 		s:pop()
-		return s:isEmpty()
+		return #s == 0
 	end
 )
 
@@ -71,7 +71,7 @@ test(
 		s:push("HELLO")
 		s:pop()
 		s:push("WORLD")
-		return not s:isEmpty()
+		return #s ~= 0
 	end
 )
 
@@ -83,7 +83,7 @@ test(
 		s:push("e")
 		s:pop()
 		s:push("g")
-		return s:getSize() == 5
+		return #s == 5
 	end
 )
 
