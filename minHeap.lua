@@ -1,7 +1,8 @@
 ---@class Heap
+---@field compare function
 local minHeap = {}
 minHeap.__index = minHeap
-minHeap.__extVersion = "0.0.3"
+minHeap.__extVersion = "0.0.4"
 
 -- https://www.wikiwand.com/en/Heap_(data_structure)
 
@@ -11,7 +12,7 @@ end
 
 local function siftUp(self)
 	local index = #self
-	while (self:hasParent(index) and self:parent(index) > self[index]) do
+	while (self:hasParent(index) and not self.compare(self:parent(index), self[index])) do
 		swap(self, self:getParentIndex(index), index)
 		index = self:getParentIndex(index)
 	end
@@ -21,11 +22,11 @@ local function siftDown(self)
 	local index = 1
 	while (self:hasLeftChild(index)) do
 		local smallerChildIndex = self:getLeftChildIndex(index)
-		if (self:hasRightChild(index) and self:rightChild(index) < self:leftChild(index)) then
+		if (self:hasRightChild(index) and self.compare(self:rightChild(index), self:leftChild(index))) then
 			smallerChildIndex = self:getRightChildIndex(index)
 		end
 
-		if (self[index] < self[smallerChildIndex]) then
+		if self.compare(self[index], self[smallerChildIndex]) then
 			break
 		else
 			swap(self, index, smallerChildIndex)
@@ -34,12 +35,15 @@ local function siftDown(self)
 	end
 end
 
+local function default_compare(a, b) return a < b end
 
 ---Creates a new heap.
----@param elements table | nil # Array of elements to put into the new heap.
+---@param elements table? # Array of elements to put into the new heap.
+---@param compare function? # Boolean return callback if a < b. i.e.
 ---@return Heap
-function minHeap.new(elements)
+function minHeap.new(elements, compare)
 	local self = setmetatable({}, minHeap)
+	self.compare = compare or default_compare
 
 	for _, v in ipairs(elements or {}) do
 		self:insert(v)

@@ -10,9 +10,28 @@ local minHeap = require "tablua.minHeap"
 
 ## Constructor
 
-### minHeap.new([t]):
+### minHeap.new([[t], compare]):
 Creates a new instance of the minHeap class.  
 If table:'*t*' is passed, they will be the initial heap values.
+function:'*compare*' can be passed as the custom compare function.  Useful for table elements.  This will need to be `a < b` return; be sure not to use a greater than symbol. i.e. `>`
+
+```lua
+	local h = minHeap.new(
+		{value = 4}, {value = 2}
+	,
+		function(a, b) return a.value < b.value end
+	)
+```
+
+It is possible to define the compare function after the heap is made, but you cannot add the elements upon construction.
+
+```lua
+local h = minHeap.new()
+h.compare = function(a, b) return a.value < b.value end
+
+-- now you can add the values.
+h:insert({value = 4})
+```
 
 ## Methods
 

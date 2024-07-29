@@ -226,6 +226,25 @@ test(
 	end
 )
 
+test(
+	"tableNew",
+	function ()
+		local h = minHeap.new({{value = 4}, {value = 2}}, function(a,b) return a.value < b.value end)
+		return h[1].value == 2, h[2].value == 4
+	end
+)
+
+test(
+	"tablepop",
+	function ()
+		local h = minHeap.new({{value = 4}, {value = 2}}, function(a,b) return a.value < b.value end)
+		return h[1].value == 2, h[1].value == 4
+	end
+)
+
+
+
+
 for k,v in ipairs(history) do
 	print(k, v)
 end
