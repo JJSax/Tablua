@@ -23,6 +23,10 @@ Facilitates last-in, first-out (LIFO) operations.
 Extends Lua's default tables with additional functionalities.  
 Enhances table operations for cleaner and more efficient code.  
 
+### minHeap.lua:
+Implements a heap data structure.
+Efficiently get the smallest element from a group of items.
+
 ## Getting Started
 ### Installation
 
@@ -55,6 +59,7 @@ Feel free to explore the documentation for each module to understand their speci
 [set.lua](docs/set.md)  
 [stack.lua](docs/stack.md)  
 [tablua.lua](docs/table.md)  
+[minHeap.lua](docs/minHeap.md)
 
 ## Contribution
 
