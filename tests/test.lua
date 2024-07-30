@@ -20,3 +20,11 @@ print("Testing Stack")
 require "tests.stack"
 print()
 
+print("Testing minHeap")
+require "tests.minHeap"
+print()
+
+print("Testing maxHeap")
+require "tests.maxHeap"
+print()
+

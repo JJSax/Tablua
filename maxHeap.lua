@@ -1,8 +1,8 @@
----@class MinHeap
+---@class MaxHeap
 ---@field compare function
-local minHeap = {}
-minHeap.__index = minHeap
-minHeap.__extVersion = "0.0.5"
+local maxHeap = {}
+maxHeap.__index = maxHeap
+maxHeap.__extVersion = "0.0.3"
 
 -- https://www.wikiwand.com/en/Heap_(data_structure)
 
@@ -12,7 +12,7 @@ end
 
 local function siftUp(self)
 	local index = #self
-	while (self:hasParent(index) and not self.compare(self:parent(index), self[index])) do
+	while (self:hasParent(index) and self.compare(self[index], self:parent(index))) do
 		swap(self, self:getParentIndex(index), index)
 		index = self:getParentIndex(index)
 	end
@@ -35,14 +35,14 @@ local function siftDown(self)
 	end
 end
 
-local function default_compare(a, b) return a < b end
+local function default_compare(a, b) return a > b end
 
----Creates a new heap.
----@param elements table? # Array of elements to put into the new heap.
----@param compare function? # Boolean return callback if a < b. i.e.
----@return MinHeap
-function minHeap.new(elements, compare)
-	local self = setmetatable({}, minHeap)
+---Creates a new MaxHeap.
+---@param elements table? # Array of elements to put into the new MaxHeap.
+---@param compare function? # Boolean return callback if a > b. i.e.
+---@return MaxHeap
+function maxHeap.new(elements, compare)
+	local self = setmetatable({}, maxHeap)
 	self.compare = compare or default_compare
 
 	for _, v in ipairs(elements or {}) do
@@ -53,8 +53,8 @@ function minHeap.new(elements, compare)
 end
 
 --- Combines two heaps into one; Does not destroy input heaps.
----@return MinHeap
-function minHeap:merge(b)
+---@return MaxHeap
+function maxHeap:merge(b)
 	local out = self:clone()
 	for _, v in ipairs(b) do
 		out:insert(v)
@@ -62,96 +62,96 @@ function minHeap:merge(b)
 	return out
 end
 
----Adds a new element into the heap then restores heap properties.
+---Adds a new element into the MaxHeap then restores MaxHeap properties.
 ---@param element any
-function minHeap:insert(element)
+function maxHeap:insert(element)
 	table.insert(self, element)
 	siftUp(self)
 end
-minHeap.add = minHeap.insert
+maxHeap.add = maxHeap.insert
 
----Get the smallest element in heap and remove it from the heap.
+---Get the smallest element in MaxHeap and remove it from the MaxHeap.
 ---@return any
 ---@nodiscard
-function minHeap:poll()
+function maxHeap:poll()
 	local item = self[1]
 	swap(self, 1, #self)
 	self[#self] = nil
 	siftDown(self)
 	return item
 end
-minHeap.pop = minHeap.poll
+maxHeap.pop = maxHeap.poll
 
-function minHeap:discard() local _ = self:poll() end
+function maxHeap:discard() local _ = self:poll() end
 
----Gives the smallest element in the heap without removing it.
+---Gives the smallest element in the MaxHeap without removing it.
 ---@return any
-function minHeap:peek()
+function maxHeap:peek()
 	return self[1]
 end
 
 ---@param parentIndex integer
 ---@return integer
-function minHeap:getLeftChildIndex(parentIndex)
+function maxHeap:getLeftChildIndex(parentIndex)
 	return 2 * parentIndex
 end
 
 ---@param parentIndex integer
 ---@return integer
-function minHeap:getRightChildIndex(parentIndex)
+function maxHeap:getRightChildIndex(parentIndex)
 	return 2 * parentIndex + 1
 end
 
 ---@param childIndex integer
 ---@return integer
-function minHeap:getParentIndex(childIndex)
+function maxHeap:getParentIndex(childIndex)
 	return math.floor(childIndex / 2)
 end
 
 ---Checks if element at index position has a left child.
 ---@param index integer
 ---@return boolean
-function minHeap:hasLeftChild(index)
+function maxHeap:hasLeftChild(index)
 	return self:getLeftChildIndex(index) <= #self
 end
 ---Checks if element at index position has a right child.
 ---@param index integer
 ---@return boolean
-function minHeap:hasRightChild(index)
+function maxHeap:hasRightChild(index)
 	return self:getRightChildIndex(index) <= #self
 end
 ---Checks if element at index position has a parent
 ---@param index integer
 ---@return boolean
-function minHeap:hasParent(index)
+function maxHeap:hasParent(index)
 	return index <= #self and self:getParentIndex(index) > 0
 end
 
 ---The left child value of the item at index position.  Assumes element has child.
 ---@param index integer
 ---@return any
-function minHeap:leftChild(index)
+function maxHeap:leftChild(index)
 	return self[self:getLeftChildIndex(index)]
 end
 
 ---The right child value of the item at index position.  Assumes element has child.
 ---@param index integer
 ---@return any
-function minHeap:rightChild(index)
+function maxHeap:rightChild(index)
 	return self[self:getRightChildIndex(index)]
 end
 
 ---The parent value of the item at index position.  Assumes element has parent.
 ---@param index integer
 ---@return any
-function minHeap:parent(index)
+function maxHeap:parent(index)
 	return index <= #self and self[self:getParentIndex(index)]
 end
 
----Copies the heap into a new output heap.
----@return MinHeap # The identical output heap.
-function minHeap:clone()
-	return minHeap.new(self)
+---Copies the MaxHeap into a new output MaxHeap.
+---@return MaxHeap # The identical output MaxHeap.
+function maxHeap:clone()
+	return maxHeap.new(self)
 end
 
-return minHeap
+return maxHeap
