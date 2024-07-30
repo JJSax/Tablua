@@ -1,6 +1,3 @@
-
-local HERE = (...):gsub('%.[^%.]+$', '')
-
 ---@class MinHeap : Heap
 local minHeap = require((...):match("(.-)[^%.]+$") .. ".heap")
 minHeap.__extVersion = "0.0.6"
