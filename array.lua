@@ -7,7 +7,7 @@ for k, v in pairs(table) do
 	array[k] = v
 end
 array.__index = array
-array.__extVersion = "0.1.58"
+array.__extVersion = "0.1.59"
 
 local function assert(condition, message, stack)
 	if not condition then
@@ -379,7 +379,7 @@ function array.shuffle(a)
 		local i = math.random(1, length)
 		length = length - 1
 
-		array.swap(a, length, i)
+		array.swap(a, #a, i)
 	end
 
 end

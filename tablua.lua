@@ -8,7 +8,7 @@ for k, v in pairs(table) do
 	Table[k] = v
 end
 Table.__index = Table
-Table.__extVersion = "0.4.3"
+Table.__extVersion = "0.4.4"
 
 
 local function assert(condition, message, stack)
@@ -403,7 +403,7 @@ function Table.shuffle(a)
 		local i = math.random(1, length)
 		length = length - 1
 
-		Table.swap(a, length, i)
+		Table.swap(a, #a, i)
 	end
 
 end
