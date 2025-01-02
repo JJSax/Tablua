@@ -7,7 +7,7 @@ for k, v in pairs(table) do
 	array[k] = v
 end
 array.__index = array
-array.__extVersion = "0.1.59"
+array.__extVersion = "0.1.60"
 
 local function assert(condition, message, stack)
 	if not condition then
