@@ -1,5 +1,6 @@
 local Table = require "tablua"
 print(_VERSION)
+
 local history = {}
 local fail = "%s test failed at line %d. Error: %s"
 local succeed = "%s test successful"
@@ -13,6 +14,33 @@ local function test(label, test, expect)
 	table.insert(history,
 		string.format(phrase, label, debug.getinfo(2).currentline, msg)
 	)
+end
+
+local function tablesAreEqual(x, original)
+	if x == original then return true end
+	for i, v in ipairs(x) do
+		if original[i] ~= v then
+			return false
+		end
+	end
+	return true
+end
+
+local function tablesHaveSameElements(x, original)
+	local copy = {}
+	local t = 0
+	for k, v in ipairs(original) do
+		copy[v] = true
+		t = t + 1
+	end
+
+	for k, v in ipairs(x) do
+		if not copy[v] then return false end
+		copy[v] = nil
+		t = t - 1
+	end
+
+	if t ~= 0 then return false end
 end
 
 test(
@@ -378,6 +406,25 @@ test(
 		local x = {1,2,3,4,5}
 		Table.shuffle(x)
 		return x[1] ~= 1 or x[2] ~= 2 or x[3] ~= 3 or x[4] ~= 4 or x[5] ~= 5
+	end,
+	true
+)
+
+test(
+	"shuffle2",
+	function()
+		local x = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }
+		local original = { (table.unpack or unpack)(x) }
+
+		-- Shuffle the array multiple times and check if it changes
+		for _ = 1, 100 do
+			Table.shuffle(x)
+			if not tablesAreEqual(x, original) and not tablesHaveSameElements(x, original) then
+				return true
+			end
+		end
+
+		return false
 	end,
 	true
 )

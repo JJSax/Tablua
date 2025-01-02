@@ -1,5 +1,7 @@
 local array = require "array"
 print(_VERSION)
+-- local unpack = table.unpack or unpack
+
 local history = {}
 local fail = "%s test failed at line %d. Error: %s"
 local succeed = "%s test successful"
@@ -22,6 +24,24 @@ local function arraysAreEqual(x, original)
 		end
 	end
 	return true
+end
+
+local function arraysHaveSameElements(x, original)
+	local copy = {}
+	local t = 0
+	for k,v in ipairs(original) do
+		copy[v] = true
+		t = t + 1
+	end
+
+	for k, v in ipairs(x) do
+		if not copy[v] then return false end
+		copy[v] = nil
+		t = t - 1
+	end
+
+	if t ~= 0 then return false end
+
 end
 
 test(
@@ -380,13 +400,13 @@ test(
 test(
 	"shuffle",
 	function()
-		local x = {1, 2, 3, 4, 5}
-		local original = {table.unpack(x)}
+		local x = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+		local original = {(table.unpack or unpack)(x)}
 
 		-- Shuffle the array multiple times and check if it changes
 		for _ = 1, 100 do
 			array.shuffle(x)
-			if not arraysAreEqual(x, original) then
+			if not arraysAreEqual(x, original) and not arraysHaveSameElements(x, original) then
 				return true
 			end
 		end

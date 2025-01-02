@@ -401,9 +401,9 @@ function Table.shuffle(a)
 	local length = #a
 	while length > 1 do
 		local i = math.random(1, length)
-		length = length - 1
+		Table.swap(a, length, i)
 
-		Table.swap(a, #a, i)
+		length = length - 1
 	end
 
 end

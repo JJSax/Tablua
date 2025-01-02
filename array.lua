@@ -377,9 +377,9 @@ function array.shuffle(a)
 	local length = #a
 	while length > 1 do
 		local i = math.random(1, length)
-		length = length - 1
+		array.swap(a, length, i)
 
-		array.swap(a, #a, i)
+		length = length - 1
 	end
 
 end
