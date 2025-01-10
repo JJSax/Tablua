@@ -3,12 +3,8 @@
 ---@field insert function
 ---@field remove function
 local Table = {}
-
-for k, v in pairs(table) do
-	Table[k] = v
-end
-Table.__index = Table
-Table.__extVersion = "0.4.5"
+setmetatable(Table, { __index = table })
+Table.__extVersion = "0.4.6"
 
 
 local function assert(condition, message, stack)
@@ -26,7 +22,7 @@ end
 
 ---@return Table
 function Table.new(t)
-	return setmetatable(t or {}, Table)
+	return setmetatable(t or {}, { __index = Table })
 end
 
 function Table.isArray(a)
