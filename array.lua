@@ -3,11 +3,8 @@
 ---@field insert function
 ---@field remove function
 local array = {}
-for k, v in pairs(table) do
-	array[k] = v
-end
-array.__index = array
-array.__extVersion = "0.1.60"
+setmetatable(array, {__index = table})
+array.__extVersion = "0.1.61"
 
 local function assert(condition, message, stack)
 	if not condition then
@@ -24,7 +21,7 @@ end
 
 ---@return Array
 function array.new(t)
-	return setmetatable(t or {}, array)
+	return setmetatable(t or {}, {__index = array})
 end
 
 function array.swap(a, first, second)

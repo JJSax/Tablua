@@ -1,6 +1,6 @@
 local array = require "array"
 print(_VERSION)
--- local unpack = table.unpack or unpack
+local unpack = table.unpack or unpack
 
 local history = {}
 local fail = "%s test failed at line %d. Error: %s"
@@ -401,7 +401,7 @@ test(
 	"shuffle",
 	function()
 		local x = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
-		local original = {(table.unpack or unpack)(x)}
+		local original = {unpack(x)}
 
 		-- Shuffle the array multiple times and check if it changes
 		for _ = 1, 100 do
