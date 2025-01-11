@@ -41,10 +41,10 @@ end
 
 local function default_compare(a, b) return a < b end
 
--- -Creates a new heap.
--- -@param elements table? # Array of elements to put into the new heap.
--- -@param compare function? # Boolean return callback if a < b. i.e.
--- -@return Heap
+---Creates a new heap.
+---@param elements table? # Array of elements to put into the new heap.
+---@param compare function? # Boolean return callback if a < b. i.e.
+---@return Heap
 function heap.new(elements, compare)
 	local self = setmetatable({}, heap)
 	self.compare = compare or default_compare
