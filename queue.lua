@@ -1,19 +1,11 @@
+
+local HERE = (...):match("(.-)[^%.]+$")
+local Base = require(HERE .. ".base")
+
 ---@class Queue
 local queue = {}
 queue.__index = queue
-queue.__extVersion = "0.0.4"
-
-local function assert(condition, message, stack)
-	if not condition then
-		error(message, stack)
-	end
-end
-
--- local function assertTable(t)
--- 	assert(type(t) == "table",
--- 		"Parameter type needs to be of type \"table\".  Passed type: "..type(t), 4)
--- end
-
+queue.__extVersion = "0.0.5"
 
 -------------------------------------------------
 
@@ -22,26 +14,35 @@ function queue.new(t)
 	return setmetatable(t or {}, queue)
 end
 
+--- Adds an element to the rear of the queue.
 function queue:enqueue(value)
 	table.insert(self, value)
 end
 queue.add = queue.enqueue
 
+--- Removes and returns the element from the front of the queue.
 function queue:dequeue()
 	return table.remove(self, 1)
 end
 queue.remove = queue.dequeue
 
+--- Returns the element at the front of the queue without removing it.
 function queue:peek()
 	return self[1]
 end
 queue.front = queue.peek
 
+--- Clears the queue while keeping same memory address.<br>
+--- Use queue.new unless you need the same memory address.
 function queue:clear()
-	-- making new table may be faster.  Consider if you need the same memory address
 	for k in ipairs(self) do
 		self[k] = nil
 	end
+end
+
+--- Checks if the queue is empty and returns a boolean value.
+function queue:isEmpty()
+	return #self == 0
 end
 
 function queue:contains(value)
@@ -55,35 +56,13 @@ function queue:iterate()
 	return ipairs(self)
 end
 
-function queue:clone()
+---Create copy of the passed Queue recursively.
+queue.clone = Base.clone
 
-	--[[
-	This function will create copy of the passed table.  No recursive table clones.
-	]]
-	local output = {}
-	for k, v in ipairs(self) do
-		output[k] = v
-	end
-	return queue.new(output)
-
-end
+---Create a simple clone.
+queue.shallowClone = Base.shallowClone
 
 queue.toString = table.concat
 
-
-
-
-
-
--- Enqueue: Adds an element to the rear of the queue.
--- Dequeue: Removes and returns the element from the front of the queue.
--- Peek/Front: Returns the element at the front of the queue without removing it.
--- IsEmpty: Checks if the queue is empty and returns a boolean value.
--- Size: Returns the number of elements currently in the queue.
--- Clear: Removes all elements from the queue, making it empty.
--- Contains: Checks if a specific element is present in the queue.
--- Iterator: Provides an iterator or enumerator to iterate over the elements in the queue.
--- toString: Converts the queue into a string representation.
--- Clone: Creates a copy of the queue.
 
 return queue

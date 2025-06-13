@@ -158,6 +158,32 @@ test(
 	end
 )
 
+test(
+	"empty",
+	function()
+		local q = queue.new{"this", "string"}
+		return q:isEmpty() == false
+	end
+)
+
+test(
+	"empty2",
+	function()
+		local q = queue.new{}
+		return q:isEmpty()
+	end
+)
+
+test(
+	"empty3",
+	function()
+		local q = queue.new { "this", "string" }
+		q:dequeue()
+		q:dequeue()
+		return q:isEmpty()
+	end
+)
+
 
 
 for k,v in ipairs(history) do
