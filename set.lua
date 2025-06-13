@@ -1,7 +1,7 @@
 
 ---@class Set
 local Set = {}
-Set.__extVersion = "0.0.7"
+Set.__extVersion = "0.0.8"
 Set.__index = Set
 local setsize = {} -- use in key of the set to store it's size.
 
@@ -21,7 +21,7 @@ end
 
 function Set:padd(keys)
 	if keys == nil then return end
-	for i, v in ipairs(keys) do self:add(v) end
+	for _, v in ipairs(keys) do self:add(v) end
 end
 
 function Set:remove(key)
@@ -43,7 +43,7 @@ end
 
 function Set:list()
 	local out = {}
-	for k, v in pairs(self) do
+	for k in pairs(self) do
 		if k ~= setsize then
 			table.insert(out, k)
 		end
@@ -68,19 +68,72 @@ function Set:iter()
 	end
 end
 
+function Set:union(other)
+	for k in pairs(other) do
+		self[k] = true
+	end
+end
+
+function Set:difference(other)
+	local clone = self:clone()
+	for k in other:iter() do
+		if clone[k] then
+			clone:remove(k)
+		else
+			clone:add(k)
+		end
+	end
+	return clone
+end
+
+function Set:intersection(other)
+	local out = Set.new()
+	for k in self:iter() do
+		if other[k] then
+			out:add(k)
+		end
+	end
+	return out
+end
+
+function Set:joint(b)
+	for k in self:iter() do
+		if b[k] then return true end
+	end
+	return false
+end
+
+function Set:isSubset(b)
+	for k in self:iter() do
+		if not b[k] then return false end
+	end
+	return true
+end
+
+function Set:isSuperset(b)
+	for k in b:iter() do
+		if not self[k] then return false end
+	end
+	return true
+end
+
+function Set:__sub(other)
+	return self:difference(other)
+end
+
 function Set:__len()
 	return self[setsize]
 end
 
 function Set:__eq(other)
 	if other[setsize] and #other ~= #self then return false end
-	local matchCount = 0
+
 	for k in self:iter() do
-		if other[k] then
-			matchCount = matchCount + 1
+		if not other[k] then
+			return false
 		end
 	end
-	return matchCount == #self
+	return true
 end
 
 return Set

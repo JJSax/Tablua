@@ -1,18 +1,36 @@
 local Set = require "set"
 print(_VERSION)
-local history = {}
-local fail = "%s test failed at line %d. Error: %s"
-local succeed = "%s test successful"
-local totals = {[fail] = 0, [succeed] = 0}
 
-local function test(label, test, expect)
-	expect = expect == nil and true or expect
-	local status, msg = pcall(test)
-	local phrase = (not status or msg ~= expect) and fail or succeed
-	totals[phrase] = totals[phrase] + 1
-	table.insert(history,
-		string.format(phrase, label, debug.getinfo(2).currentline, msg)
-	)
+local totalTests = 0
+local passes = 0
+local fails = 0
+local errors = 0
+
+local function test(name, func, expected)
+	local function errorHandler(err)
+		errors = errors + 1
+		fails = fails + 1
+		local trace = debug.traceback("", 2)
+		local line = trace:match(":(%d+): in function") or "unknown"
+		print(string.format("[ERROR] Test '%s' failed on line %s: %s", name, line, tostring(err)))
+	end
+
+	expected = expected or true
+	totalTests = totalTests + 1
+	local ok, result = xpcall(func, errorHandler)
+
+	if ok then
+		if result ~= expected then
+			local info = debug.getinfo(2, "Sl")
+			local line = info and info.currentline or "unknown"
+			print(string.format("[FAIL] Test '%s' on line %s: expected '%s', got '%s'", name, line, tostring(expected),
+				tostring(result)))
+			fails = fails + 1
+		else
+			print(string.format("[PASS] Test '%s'", name))
+			passes = passes + 1
+		end
+	end
 end
 
 test(
@@ -222,9 +240,150 @@ test(
 	end
 )
 
+test(
+	"union",
+	function()
+		local a = Set.new{"cherry", "apple", "orange"}
+		local b = Set.new{"grape"}
+		a:union(b)
+		return a.cherry and a.apple and a.orange and a.grape
+	end
+)
 
-for k,v in ipairs(history) do
-	print(k, v)
+test(
+	"union2",
+	function()
+		local a = Set.new{"cherry", "apple", "orange"}
+		local b = Set.new{"grape", "banana"}
+		b:remove("banana")
+		a:union(b)
+		return a.cherry and a.apple and a.orange and a.grape and not a.banana
+	end
+)
+
+test(
+	"difference",
+	function()
+		local a = Set.new{"cherry", "apple", "orange"}
+		local b = Set.new{"grape"}
+		local c = a:difference(b)
+		return c.cherry and c.apple and c.orange and c.grape
+	end
+)
+
+test(
+	"difference2",
+	function()
+		local a = Set.new{"cherry", "apple", "orange"}
+		local b = Set.new{"grape", "apple"}
+		local c = a:difference(b)
+		return c.cherry and c.orange and c.grape
+	end
+)
+
+test(
+	"difference3",
+	function()
+		local a = Set.new{"apple", "grape"}
+		local b = Set.new{"grape", "apple"}
+		local c = a:difference(b)
+		return not c.apple and not c.grape and #c == 0
+	end
+)
+
+test(
+	"intersection",
+	function()
+		local a = Set.new{"apple", "grape"}
+		local b = Set.new{"grape", "apple"}
+		local c = a:intersection(b)
+		return c.apple and c.grape
+	end
+)
+
+test(
+	"intersection",
+	function()
+		local a = Set.new{"apple", "grape"}
+		local b = Set.new{"grape", "apple", "orange"}
+		local c = a:intersection(b)
+		return c.apple and c.grape
+	end
+)
+
+test(
+	"intersection2",
+	function()
+		local a = Set.new{"apple", "grape"}
+		local b = Set.new{"pineapple", "mango", "orange"}
+		local c = a:intersection(b)
+		return #c == 0
+	end
+)
+
+test(
+	"joint",
+	function()
+		local a = Set.new{"apple", "grape"}
+		local b = Set.new{"pineapple", "mango", "orange"}
+		local c = a:joint(b)
+		return c == false
+	end
+)
+
+test(
+	"joint2",
+	function()
+		local a = Set.new{"apple", "grape"}
+		local b = Set.new{"pineapple", "grape", "orange"}
+		return a:joint(b)
+	end
+)
+
+test(
+	"subset",
+	function()
+		local a = Set.new{"apple", "grape"}
+		local b = Set.new { "pineapple", "grape", "orange" }
+		return not a:isSubset(b)
+	end
+)
+
+test(
+	"subset2",
+	function()
+		local a = Set.new { "grape", "apple" }
+		local b = Set.new{"apple", "grape", "pineapple"}
+		return a:isSubset(b)
+	end
+)
+
+test(
+	"superset",
+	function()
+		local a = Set.new{"apple", "grape"}
+		local b = Set.new{"pineapple", "grape", "orange"}
+		return not a:isSuperset(b)
+	end
+)
+
+test(
+	"superset2",
+	function()
+		local a = Set.new{"pineapple", "grape", "orange"}
+		local b = Set.new {"orange", "grape"}
+		return a:isSuperset(b)
+	end
+)
+
+print("\nRESULTS:")
+if fails > 0 then
+	print(" -> One or more tests failed!")
+else
+	print(" -> All Tests Passed")
 end
-print()
-print(("Total Successful: %d - Total Fails: %d"):format(totals[succeed], totals[fail]))
+
+print("Tests ran: " .. totalTests)
+print("Tests passed: " .. passes)
+print("Tests failed: " .. fails)
+print("Tests that errored: " .. errors)
