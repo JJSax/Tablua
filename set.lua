@@ -117,6 +117,9 @@ function Set:isSuperset(b)
 	return true
 end
 
+function Set:__le(b) return self:isSubset(b) end
+function Set:__ge(b) return self:isSubset(b) end
+
 function Set:__sub(other)
 	return self:difference(other)
 end

@@ -359,6 +359,15 @@ test(
 )
 
 test(
+	"subset_meta",
+	function()
+		local a = Set.new { "grape", "apple" }
+		local b = Set.new{"apple", "grape", "pineapple"}
+		return a <= b
+	end
+)
+
+test(
 	"superset",
 	function()
 		local a = Set.new{"apple", "grape"}
@@ -375,6 +384,16 @@ test(
 		return a:isSuperset(b)
 	end
 )
+test(
+	"superset_meta",
+	function()
+		local a = Set.new { "apple", "grape", "pineapple" }
+		local b = Set.new { "grape", "apple" }
+		return a >= b
+	end
+)
+
+
 
 print("\nRESULTS:")
 if fails > 0 then
