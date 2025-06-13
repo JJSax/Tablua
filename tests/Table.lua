@@ -394,10 +394,21 @@ test(
 
 test(
 	"shuffle",
-	function()
-		local x = {1,2,3,4,5}
+	function() -- making larger lists mean less false positives.
+		local x = {}
+		local n = 1000
+		for i = 1, n do
+			table.insert(x, i)
+		end
 		Table.shuffle(x)
-		return x[1] ~= 1 or x[2] ~= 2 or x[3] ~= 3 or x[4] ~= 4 or x[5] ~= 5
+
+		for i = 1, n do
+			if x[i] ~= i then
+				return true
+			end
+		end
+
+		return false
 	end,
 	true
 )
