@@ -1,30 +1,16 @@
 -- all tests in one.
 
-print("Testing Tablua")
+local tests = require "tests.baseTest"
+tests.supressPasses = true
+
 require "tests.Table"
-print()
-
-print("Testing Array")
 require "tests.array"
-print()
-
-print("Testing Set")
 require "tests.set"
-print()
-
-print("Testing Queue")
 require "tests.queue"
-print()
-
-print("Testing Stack")
 require "tests.stack"
-print()
-
-print("Testing minHeap")
 require "tests.minHeap"
-print()
-
-print("Testing maxHeap")
 require "tests.maxHeap"
-print()
 
+print()
+print(" -> Tablua full library test concluded")
+tests.dump()

@@ -1,20 +1,13 @@
 local array = require "array"
-print(_VERSION)
 local unpack = table.unpack or unpack
 
-local history = {}
-local fail = "%s test failed at line %d. Error: %s"
-local succeed = "%s test successful"
-local totals = {[fail] = 0, [succeed] = 0}
+local supressPasses = ... == "true" and true or false
+local tests = require "tests.baseTest"
+local test = tests.test
+tests.supressPasses = tests.supressPasses or supressPasses
+local file = debug.getinfo(1).short_src
 
-local function test(label, test, expect)
-	local status, msg = pcall(test)
-	local phrase = (not status or msg ~= expect) and fail or succeed
-	totals[phrase] = totals[phrase] + 1
-	table.insert(history,
-		string.format(phrase, label, debug.getinfo(2).currentline, msg)
-	)
-end
+print("testing " .. file)
 
 local function arraysAreEqual(x, original)
 	if x == original then return true end
@@ -540,7 +533,6 @@ test(
 	true
 )
 
-
 test(
 	"mipairsAtStart",
 	function()
@@ -556,8 +548,6 @@ test(
 	true
 )
 
-for k,v in ipairs(history) do
-	print(k, v)
+if not tests.supressPasses then
+	tests.dump()
 end
-print()
-print(("Total Successful: %d - Total Fails: %d"):format(totals[succeed], totals[fail]))

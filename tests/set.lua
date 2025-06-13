@@ -1,37 +1,12 @@
 local Set = require "set"
-print(_VERSION)
 
-local totalTests = 0
-local passes = 0
-local fails = 0
-local errors = 0
+local supressPasses = ... == "true" and true or false
+local tests = require "tests.baseTest"
+local test = tests.test
+tests.supressPasses = tests.supressPasses or supressPasses
+local file = debug.getinfo(1).short_src
 
-local function test(name, func, expected)
-	local function errorHandler(err)
-		errors = errors + 1
-		fails = fails + 1
-		local trace = debug.traceback("", 2)
-		local line = trace:match(":(%d+): in function") or "unknown"
-		print(string.format("[ERROR] Test '%s' failed on line %s: %s", name, line, tostring(err)))
-	end
-
-	expected = expected or true
-	totalTests = totalTests + 1
-	local ok, result = xpcall(func, errorHandler)
-
-	if ok then
-		if result ~= expected then
-			local info = debug.getinfo(2, "Sl")
-			local line = info and info.currentline or "unknown"
-			print(string.format("[FAIL] Test '%s' on line %s: expected '%s', got '%s'", name, line, tostring(expected),
-				tostring(result)))
-			fails = fails + 1
-		else
-			print(string.format("[PASS] Test '%s'", name))
-			passes = passes + 1
-		end
-	end
-end
+print("testing " .. file)
 
 test(
 	"newEmpty",
@@ -384,6 +359,7 @@ test(
 		return a:isSuperset(b)
 	end
 )
+
 test(
 	"superset_meta",
 	function()
@@ -393,16 +369,6 @@ test(
 	end
 )
 
-
-
-print("\nRESULTS:")
-if fails > 0 then
-	print(" -> One or more tests failed!")
-else
-	print(" -> All Tests Passed")
+if not tests.supressPasses then
+	tests.dump()
 end
-
-print("Tests ran: " .. totalTests)
-print("Tests passed: " .. passes)
-print("Tests failed: " .. fails)
-print("Tests that errored: " .. errors)
