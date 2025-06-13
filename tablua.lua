@@ -5,7 +5,7 @@ local Base = require(HERE..".base")
 ---@class Table : TabluaBaseFunctions
 local Table = setmetatable({}, { __index = Base })
 Table.__index = Table
-Table.__extVersion = "0.5.0"
+Table.__extVersion = "0.5.1"
 
 
 local function assert(condition, message, stack)
@@ -34,6 +34,7 @@ function Table.isArray(a)
 	]]
 
 	assertTable(a)
+
 	return #a == Table.size(a)
 
 end
@@ -48,7 +49,7 @@ function Table.size(a)
 	assertTable(a)
 
 	local count = 0
-	for k,v in pairs(a) do
+	for _ in pairs(a) do
 		count = count + 1
 	end
 	return count
@@ -77,6 +78,20 @@ function Table.compare(a, b)
 
 	return Table.size(clone) == 0
 
+end
+
+---This is a custom iterator that will return each item in the array for you to alter as needed.<br>
+---Upon finishing the iterator, it will run through and delete [remove] items safely and efficiently.
+---@param a table|TabluaBaseFunctions
+---@return function The iterator
+function Table.arrayIter(a, remove)
+	local i = 0
+	local size = #a
+	return function()
+		i = i + 1
+		if i <= size then return i, a[i] end
+		Base.condense(a, remove)
+	end
 end
 
 return Table

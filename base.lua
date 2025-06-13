@@ -21,16 +21,19 @@ end
 
 -------------------------------------------------
 
----@return table
+
+---Create a new tablua base
+---@param t table?
+---@return table|TabluaBaseFunctions
 function Base.new(t)
 	return setmetatable(t or {}, { __index = Base })
 end
 
+---Swaps two elements in the table.
+---@param a table
+---@param first integer
+---@param second integer
 function Base.swap(a, first, second)
-	--[[
-	This will swap two elements in the table.
-	]]
-
 	assertTable(a)
 
 	local cache = a[first]
@@ -38,13 +41,12 @@ function Base.swap(a, first, second)
 	a[second] = cache
 end
 
+---This function is a simple clone.  Only meant for single layer tables and arrays. <br>
+---If passed a table with a nested table, original references to the subsequent table could interfere. <br>
+---If you are unsure if you should use this function, or table.clone, use table.clone. <br>
+---@param a table|TabluaBaseFunctions
+---@return table
 function Base.shallowClone(a)
-	--[[
-	This function is a simple clone.  Only meant for single layer tables and arrays.
-	Passed a table with a nested table, original references to subsequent table could interfere.
-	If you are unsure if you should use this function, or table.clone, use table.clone.
-	]]
-
 	assertTable(a)
 
 	local output = {}
@@ -54,11 +56,10 @@ function Base.shallowClone(a)
 	return Base.new(output)
 end
 
+---This function will create copy of the passed table, and will clone any nested tables.
+---@param a table|TabluaBaseFunctions
+---@return TabluaBaseFunctions
 function Base.clone(a)
-	--[[
-	This function will create copy of the passed table, and will clone any nested tables.
-	]]
-
 	if type(a) ~= "table" then return a end
 	local output = {}
 	for k, v in pairs(a) do
@@ -71,12 +72,12 @@ function Base.clone(a)
 	return Base.new(output)
 end
 
+---This function will join multiple tables together.
+---Tables with string keys will set a[key] to b[key] value.
+---@param a table|TabluaBaseFunctions
+---@param ... table|TabluaBaseFunctions
+---@return TabluaBaseFunctions
 function Base.join(a, ...)
-	--[[
-	This function will join multiple tables together.
-	Tables with string keys will set a[key] to b[key] value.
-	]]
-
 	assertTable(a)
 
 	local output = Base.clone(a)
@@ -94,11 +95,12 @@ function Base.join(a, ...)
 	return Base.new(output)
 end
 
+---Returns a new array from a from numerical index start to finish.
+---@param a any
+---@param start any
+---@param finish any
+---@return table|TabluaBaseFunctions
 function Base.slice(a, start, finish)
-	--[[
-	Returns a new array from a from numerical index start to finish.
-	]]
-
 	assertTable(a)
 
 	if not finish then finish = #a end
@@ -111,13 +113,15 @@ function Base.slice(a, start, finish)
 	return Base.new(out)
 end
 
+---This function will remove a range of elements from a table.
+---@param a TabluaBaseFunctions
+---@param index integer Index to start removing elements exclusive.  Item at index will remain
+---@param howmany integer Amount of elements to remove
+---@param ... any Elements to insert at index
+---@return TabluaBaseFunctions
 function Base.splice(a, index, howmany, ...)
-	--[[
-	This function will remove a range of elements from a table.
-	... will insert at index
-	developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
-	]]
-
+	-- inspired by
+	-- developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
 	assertTable(a)
 
 	if not howmany then howmany = 0 end
@@ -125,7 +129,7 @@ function Base.splice(a, index, howmany, ...)
 	for i = 1, index do
 		Base.insert(out, a[i])
 	end
-	for k, v in ipairs({ ... }) do
+	for _, v in ipairs({ ... }) do
 		Base.insert(out, v)
 	end
 	for i = index + howmany + 1, #a do
@@ -135,28 +139,34 @@ function Base.splice(a, index, howmany, ...)
 	return Base.new(out)
 end
 
+---Returns the last ordered item in the table.  Holes in array will not be considered.
+---@param a table|TabluaBaseFunctions
+---@return TabluaBaseFunctions #The last ordered item in the table
 function Base.last(a)
-	--This will return the last item in a sorted array
 	return a[#a]
 end
 
+---Returns a random item from the table.
+---@param a table|TabluaBaseFunctions
+---@return TabluaBaseFunctions #The random item
+---@return integer #The index of the random item
 function Base.choice(a)
-	--Returns a random item from the table.
-
 	assertTable(a)
 
 	local choice = math.random(#a)
 	return a[choice], choice
 end
 
+---Returns count number of random items from the table.
+---@param a table|TabluaBaseFunctions
+---@param count integer total number of random items to return
+---@return TabluaBaseFunctions
 function Base.choices(a, count)
-	--Returns count number of random items from the table.
-
 	assertTable(a)
 
 	local out = {}
 	local cache = Base.clone(a)
-	for i = 1, count do
+	for _ = 1, count do
 		local choice, key = Base.choice(cache)
 		Base.insert(out, choice)
 		Base.remove(cache, key)
@@ -164,12 +174,12 @@ function Base.choices(a, count)
 	return Base.new(out)
 end
 
+---This function will search a table for a value and return the index of the value.<br>
+---If the value is not found, it will return nil.
+---@param a table|TabluaBaseFunctions
+---@param value any
+---@return TabluaBaseFunctions?
 function Base.find(a, value)
-	--[[
-	This function will search a table for a value and return the index of the value.
-	If the value is not found, it will return nil.
-	]]
-
 	assertTable(a)
 
 	for k, v in pairs(a) do
@@ -180,13 +190,13 @@ function Base.find(a, value)
 	return nil
 end
 
+---This function will search a table for a value and return the index of the value.<br>
+---If the value is not found, it will return nil.<br>
+---Important! The table must be sorted before using this function.
+---@param a table|TabluaBaseFunctions
+---@param value any
+---@return integer?
 function Base.binarySearch(a, value)
-	--[[
-	This function will search a table for a value and return the index of the value.
-	If the value is not found, it will return nil.
-	@Ensure a is sorted before using this function.
-	]]
-
 	assertTable(a)
 
 	local low = 1
@@ -204,14 +214,13 @@ function Base.binarySearch(a, value)
 	return nil
 end
 
+---This will reduce a into it's unique values
+---@param a table|TabluaBaseFunctions
+---@return TabluaBaseFunctions
 function Base.unique(a)
-	--[[
-	This will reduce a into it's unique values
-	]]
-
 	local unique = {}
 	local uniqueSet = {}
-	for k, v in pairs(a) do
+	for _, v in pairs(a) do
 		if not uniqueSet[v] then
 			uniqueSet[v] = true
 			Base.insert(unique, v)
@@ -220,14 +229,14 @@ function Base.unique(a)
 	return Base.new(unique)
 end
 
+---This will go through an array and remove all that match [remove].
+---@param a table|TabluaBaseFunctions
+---@param remove any The value to remove
+---@return TabluaBaseFunctions
+---@nodiscard
 function Base.gCondense(a, remove)
-	--[[
-	This will go through an array and remove all that match [remove].
-	This one returns the result of this.  table.condense will set the table to the result.
-	]]
-
 	local out = {}
-	for k, v in pairs(a) do
+	for _, v in pairs(a) do
 		if v ~= remove then
 			Base.insert(out, v)
 		end
@@ -235,16 +244,11 @@ function Base.gCondense(a, remove)
 	return Base.new(out)
 end
 
+---This will go through an array and remove all that match [remove].<br>
+---Condenses the table in place without creating a new address
+---@param a table|TabluaBaseFunctions
+---@param remove any The value to remove
 function Base.condense(a, remove)
-	--[[
-	This will go through an array and remove all that match [remove].
-	This one will condense table passed.  table.gCondense will return a new table.
-	*This will work with tables with sparse indices (AKA tables like a = {}; a[2] = true)
-
-	I chose to use this algorithm to preserve table address and prevent iterating
-	  over the table twice.
-	]]
-
 	local newTab = {}
 	for k, v in pairs(a) do
 		if v ~= remove then
@@ -258,19 +262,12 @@ function Base.condense(a, remove)
 	end
 end
 
+---Returns true if every element in this array satisfies the testing function.
+---@param a table|TabluaBaseFunctions
+---@param test function The test function. ex. `function(v) return v > 4 end`
+---@return boolean
 function Base.every(a, test)
-	--[[
-	Returns true if every element in this array satisfies the testing function.
-
-	example:
-	t = table.new({6,7,8})
-	print(t:every(function(v) return v > 4 end)) -- returns true
-		OR
-	print(table.every(t, function(v) return v == 1 end)) -- returns false
-
-	]]
-
-	for k, v in pairs(a) do
+	for _, v in pairs(a) do
 		if not test(v) then
 			return false
 		end
@@ -278,12 +275,11 @@ function Base.every(a, test)
 	return true
 end
 
+---Returns a new array containing all elements that param test returns true on
+---@param a table|TabluaBaseFunctions
+---@param test function The test function.  ex. `function(k, v) return v > 4 end`
+---@return TabluaBaseFunctions
 function Base.filter(a, test)
-	--[[
-	Returns a new array containing all elements of the calling array
-	  for which the provided filtering function returns true.
-	]]
-
 	local out = Base.new()
 	for k, v in pairs(a) do
 		if test(k, v) then
@@ -293,22 +289,17 @@ function Base.filter(a, test)
 	return out
 end
 
+---Reverses the order of a
+---@param a table|TabluaBaseFunctions
 function Base.invert(a)
-	--[[
-	Reverses the order of a
-	]]
-
 	for i = 1, math.floor(#a / 2) do
 		Base.swap(a, i, #a - (i - 1))
 	end
 end
 
+---Directly shuffles table `a` using Fisher-Yates Shuffle algorithm
+---@param a table|TabluaBaseFunctions
 function Base.shuffle(a)
-	--[[
-		Implements Fisher-Yates Shuffle algorithm.
-		This directly shuffles table a
-	]]
-
 	local length = #a
 	while length > 1 do
 		local i = math.random(1, length)
@@ -318,26 +309,10 @@ function Base.shuffle(a)
 	end
 end
 
-function Base.arrayIter(a, remove)
-	--[[
-	This is a custom iterator that will return each item in the array for you to alter as needed.
-	Upon finishing the iterator, it will run through and delete [remove] items safely and efficiently.
-	]]
-
-	local i = 0
-	local size = #a
-	return function()
-		i = i + 1
-		if i <= size then return i, a[i] end
-		Base.condense(a, remove)
-	end
-end
-
+---This is an iterator that iterates backwards through the array
+---@param a table|TabluaBaseFunctions
+---@return function The iterator
 function Base.reverse(a)
-	--[[
-	This is an iterator that iterates backwards through the array
-	]]
-
 	local i = #a + 1
 	return function()
 		i = i - 1
