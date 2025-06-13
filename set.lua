@@ -1,7 +1,7 @@
 
 ---@class Set
 local Set = {}
-Set.__extVersion = "0.0.8"
+Set.__extVersion = "0.1.0"
 Set.__index = Set
 local setsize = {} -- use in key of the set to store it's size.
 
