@@ -118,6 +118,7 @@ end
 function heap:hasLeftChild(index)
 	return self:getLeftChildIndex(index) <= #self
 end
+
 ---Checks if element at index position has a right child.
 ---@param index integer
 ---@return boolean
